@@ -6,7 +6,7 @@ export const db = mysql.createConnection({
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  connectionLimit:10 //! Bases on a traffic 
+  connectionLimit: 10, //! Bases on a traffic
 });
 
 db.connect((err) => {
