@@ -1,20 +1,20 @@
+// server.js or index.js
 import express from "express";
-import { db } from "./config/db.js";
+import { db } from "./config/db.js"; // connection already tested here
 import "dotenv/config";
+import cors from "cors";
+import pgrRouter from "./routes/pgrRoute.js";
 
 const app = express();
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send("Hello from Homepage");
 });
 
-db.connect((err) => {
-  if (err) {
-    console.error("Error connecting to Database: ", err);
-    return; // Exit if connection fails
-  }
+app.use("/api", pgrRouter);
 
-  app.listen(process.env.PORT || 8080, () =>
-    console.log(`Server running on port ${process.env.PORT}`)
-  );
-});
+// ✅ Start server
+app.listen(process.env.PORT || 8080, () =>
+  console.log(`🚀 Server running on port ${process.env.PORT}`)
+);

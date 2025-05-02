@@ -1,0 +1,92 @@
+now I want to make a Mysql table for storing data like a master root potassium humate contains a 1 set, 250 x 2 till 5 set, 250 x 10, and for other products, Bayer Ambitions, it has these variants 1 litres, 2 litres, 5 litres, 250ml, and 500ml  and it has a dosage and usage For 1 Litre it takes 2 acres  and price also and price varying on a different sizes and show some percent off check if its in the stock or not  and it also contains a product photos like sometime maybe 2 sometime 1 sometimes 5
+
+
+-- Products table
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    category VARCHAR(100),
+    in_stock BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Product Variants table
+CREATE TABLE product_variants (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT,
+    variant_name VARCHAR(255),
+    unit VARCHAR(50), -- ml, litre, set, etc.
+    quantity DECIMAL(10, 2),
+    price DECIMAL(10, 2),
+    discount_percent INT DEFAULT 0,
+    is_available BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+-- Dosages table (optional, only for variants that have dosage)
+CREATE TABLE dosages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    variant_id INT,
+    dosage_per_unit VARCHAR(255),
+    usage_instructions TEXT,
+    FOREIGN KEY (variant_id) REFERENCES product_variants(id)
+);
+
+-- Product Photos table (to support multiple images)
+CREATE TABLE product_photos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT,
+    image_url VARCHAR(500),
+    alt_text VARCHAR(255),
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+
+INSERT INTO categories (name) VALUES ('plantgrowthregulator');
+INSERT INTO categories (name) VALUES ('Insecticide');
+INSERT INTO categories (name) VALUES ('Fungicide');
+
+
+
+INserted Data :-
+-- Insert products
+INSERT INTO products (name, description, category, in_stock) VALUES
+('Master Root Potassium Humate', 'A powerful potassium humate-based PGR.', 'Plant Growth Regulator', TRUE),
+('Bayer Ambition', 'High-efficiency amino and fulvic acid blend for plant growth.', 'Plant Growth Promoter', TRUE);
+
+-- Insert product variants
+INSERT INTO product_variants (product_id, variant_name, unit, quantity, price, discount_percent, is_available) VALUES
+-- Master Root Potassium Humate (product_id = 1)
+(1, '1 Set', 'set', 1, 100.00, 10, TRUE),
+(1, '250 x 2', 'ml', 500, 180.00, 15, TRUE),
+(1, '250 x 3', 'ml', 750, 270.00, 18, FALSE),
+(1, '250 x 4', 'ml', 1000, 350.00, 20, TRUE),
+(1, '250 x 5', 'ml', 1250, 420.00, 22, TRUE),
+(1, '250 x 10', 'ml', 2500, 800.00, 25, TRUE),
+
+-- Bayer Ambition (product_id = 2)
+(2, '250ml', 'ml', 250, 150.00, 5, TRUE),
+(2, '500ml', 'ml', 500, 280.00, 7, TRUE),
+(2, '1 Litre', 'litre', 1, 500.00, 10, TRUE),
+(2, '2 Litre', 'litre', 2, 950.00, 12, TRUE),
+(2, '5 Litre', 'litre', 5, 2200.00, 15, FALSE);
+
+-- Insert dosage information for Bayer Ambition variants
+INSERT INTO dosages (variant_id, dosage_per_unit, usage_instructions) VALUES
+(7, '1 acre per 250ml', 'Mix with 100L water and spray uniformly.'),
+(8, '1.5 acres per 500ml', 'Mix with 150L water for best results.'),
+(9, '2 acres per 1L', 'Apply during vegetative phase with irrigation.'),
+(10, '4 acres per 2L', 'Use during flowering for optimal growth.'),
+(11, '10 acres per 5L', 'Ideal for full-scale crop coverage.');
+
+-- Insert product photos
+INSERT INTO product_photos (product_id, image_url, alt_text) VALUES
+-- Master Root Potassium Humate
+(1, 'https://krushidukan.bharatagri.com/cdn/shop/files/YogdaanMasterRoot_2.webp?v=1713852073', 'Humate Photo 1'),
+(1, 'https://krushidukan.bharatagri.com/cdn/shop/products/YogdaanMasterRoot.webp?v=1713852073', 'Humate Photo 2'),
+
+-- Bayer Ambition
+(2, 'https://krushidukan.bharatagri.com/cdn/shop/files/Bayer_Ambition_20fea0b7-7b6d-4353-a017-89f0204230f6.webp?v=1724482283', 'Bayer Photo 1'),
+(2, 'https://krushidukan.bharatagri.com/cdn/shop/files/Bayer_Ambition_3_93a9be13-eaad-4337-892f-9f9787372180.webp?v=1735654648', 'Bayer Photo 2'),
+(2, "https://cdn.shopify.com/s/files/1/0722/2059/files/ambition-fungicide-file-9106.webp?v=1743405549", "Bayer Photo 3")
