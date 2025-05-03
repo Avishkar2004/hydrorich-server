@@ -58,12 +58,11 @@ INSERT INTO products (name, description, category, in_stock) VALUES
 -- Insert product variants
 INSERT INTO product_variants (product_id, variant_name, unit, quantity, price, discount_percent, is_available) VALUES
 -- Master Root Potassium Humate (product_id = 1)
-(1, '1 Set', 'set', 1, 100.00, 10, TRUE),
-(1, '250 x 2', 'ml', 500, 180.00, 15, TRUE),
-(1, '250 x 3', 'ml', 750, 270.00, 18, FALSE),
-(1, '250 x 4', 'ml', 1000, 350.00, 20, TRUE),
-(1, '250 x 5', 'ml', 1250, 420.00, 22, TRUE),
-(1, '250 x 10', 'ml', 2500, 800.00, 25, TRUE),
+(1, '1 Set; 250 gm x 2', 'gm', 500, 180.00, 15, TRUE),
+(1, '2 Set; 250 gm x 4', 'gm', 750, 270.00, 18, FALSE),
+(1, '3 Set; 250 gm x 6', 'gm', 1000, 350.00, 20, TRUE),
+(1, '4 Set; 250 gm x 8', 'gm', 1250, 420.00, 22, TRUE),
+(1, '5 Set; 250 gm x 10', 'gm', 2500, 800.00, 25, TRUE),
 
 -- Bayer Ambition (product_id = 2)
 (2, '250ml', 'ml', 250, 150.00, 5, TRUE),
@@ -73,12 +72,18 @@ INSERT INTO product_variants (product_id, variant_name, unit, quantity, price, d
 (2, '5 Litre', 'litre', 5, 2200.00, 15, FALSE);
 
 -- Insert dosage information for Bayer Ambition variants
+-- Insert dosage information for Bayer Ambition variants
 INSERT INTO dosages (variant_id, dosage_per_unit, usage_instructions) VALUES
-(7, '1 acre per 250ml', 'Mix with 100L water and spray uniformly.'),
-(8, '1.5 acres per 500ml', 'Mix with 150L water for best results.'),
-(9, '2 acres per 1L', 'Apply during vegetative phase with irrigation.'),
-(10, '4 acres per 2L', 'Use during flowering for optimal growth.'),
-(11, '10 acres per 5L', 'Ideal for full-scale crop coverage.');
+(18, '1 acre per 250ml', 'Mix with 100L water and spray uniformly.'),
+(19, '1.5 acres per 500ml', 'Mix with 150L water for best results.'),
+(20, '2 acres per 1L', 'Apply during vegetative phase with irrigation.'),
+(21, '4 acres per 2L', 'Use during flowering for optimal growth.'),
+(22, '10 acres per 5L', 'Ideal for full-scale crop coverage.'),
+(23, '1 acre per 250ml', 'Mix with 100L water and spray uniformly.'),
+(24, '1.5 acres per 500ml', 'Mix with 150L water for best results.'),
+(25, '2 acres per 1L', 'Apply during vegetative phase with irrigation.'),
+(26, '4 acres per 2L', 'Use during flowering for optimal growth.'),
+(27, '10 acres per 5L', 'Ideal for full-scale crop coverage.');
 
 -- Insert product photos
 INSERT INTO product_photos (product_id, image_url, alt_text) VALUES
