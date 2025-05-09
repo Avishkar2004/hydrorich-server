@@ -1,10 +1,11 @@
 import express from "express";
 import "dotenv/config";
 import cors from "cors";
-import pgrRouter from "./routes/pgrRoute.js";
 import passport from "passport";
 import session from "express-session";
 import "./config/passport.js";
+import pgrRouter from "./routes/pgrRoute.js";
+import authRouter from "./routes/authRoutes.js";
 
 const app = express();
 
@@ -14,6 +15,8 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(express.json());
 
 app.use(
   session({
@@ -57,6 +60,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", pgrRouter);
+
+app.use("/api/auth", authRouter);
 
 // ✅ Start server
 app.listen(process.env.PORT || 8080, () =>
