@@ -48,6 +48,14 @@ app.get(
     session: true,
   }),
   (req, res) => {
+    // Save user info to session
+    req.session.user = {
+      name:
+        req.user.displayName ||
+        `${req.user.name.givenName} ${req.user.name.familyName}`,
+      email: req.user.email,
+    };
+
     res.redirect(`${process.env.CLIENT_URL}`);
   }
 );
