@@ -1,6 +1,3 @@
-now I want to make a Mysql table for storing data like a master root potassium humate contains a 1 set, 250 x 2 till 5 set, 250 x 10, and for other products, Bayer Ambitions, it has these variants 1 litres, 2 litres, 5 litres, 250ml, and 500ml  and it has a dosage and usage For 1 Litre it takes 2 acres  and price also and price varying on a different sizes and show some percent off check if its in the stock or not  and it also contains a product photos like sometime maybe 2 sometime 1 sometimes 5
-
-
 -- Products table
 CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,

@@ -68,17 +68,13 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "3d" }
-    );
+    // Set user in session
+    req.session.user = {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+    };
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      sameSite: "Lax",
-      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days in milliseconds
-    });
     return res.status(200).json({
       success: true,
       user: { id: user.id, name: user.name, email: user.email },
@@ -86,5 +82,28 @@ export const loginUser = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getCurrentUser = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const user = await findUserByEmail(req.user.email);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json({
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    });
+  } catch (error) {
+    console.error("Get current user error:", error);
+    return res.status(401).json({ message: "Not authenticated" });
   }
 };
