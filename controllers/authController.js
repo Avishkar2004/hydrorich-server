@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt";
 import { createUser, findUserByEmail } from "../models/userModel.js";
 import { validateUserInput } from "../utils/validateUser.js";
-import jwt from "jsonwebtoken";
 //Create Your Account
 
 export const signup = async (req, res) => {
