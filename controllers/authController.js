@@ -1,6 +1,8 @@
 import bcrypt from "bcrypt";
 import { createUser, findUserByEmail } from "../models/userModel.js";
 import { validateUserInput } from "../utils/validateUser.js";
+import jwt from "jsonwebtoken";
+//Create Your Account
 
 export const signup = async (req, res) => {
   try {
@@ -40,5 +42,49 @@ export const signup = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res
+      .status(400)
+      .json({ success: false, message: "All fields are required." });
+  }
+
+  try {
+    const user = await findUserByEmail(email);
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ success: false, message: "User not found." });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const token = jwt.sign(
+      { id: user.id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "3d" }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "Lax",
+      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days in milliseconds
+    });
+    return res.status(200).json({
+      success: true,
+      user: { id: user.id, name: user.name, email: user.email },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
