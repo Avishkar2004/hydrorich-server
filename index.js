@@ -7,6 +7,8 @@ import cookieParser from "cookie-parser";
 import "./config/passport.js";
 import pgrRouter from "./routes/pgrRoute.js";
 import authRouter from "./routes/authRoutes.js";
+import cartRoutes from "./routes/cartRoutes.js"
+
 
 const app = express();
 
@@ -81,6 +83,7 @@ app.get("/", (req, res) => {
 app.use("/api", pgrRouter);
 
 app.use("/api/auth", authRouter);
+app.use("/api/cart", cartRoutes)
 
 // ✅ Start server
 app.listen(process.env.PORT || 8080, () =>
