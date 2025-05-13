@@ -8,16 +8,15 @@ export const addToCart = async (userId, productId, variantId, quantity) => {
     );
 
     if (existing.length > 0) {
-      // Update quantity if item exists
+      // ✅ Corrected WHERE clause
       const [result] = await db.query(
-        "UPDATE cart SET quantity = quantity + ? WHERE id = ? AND product_id = ? AND variant_id = ?",
+        "UPDATE cart SET quantity = quantity + ? WHERE user_id = ? AND product_id = ? AND variant_id = ?",
         [quantity, userId, productId, variantId]
       );
       return result;
     } else {
-      // Insert new item
       const [result] = await db.query(
-        "INSERT INTO cart (user_id, product_id, variant_id, quantity) VALUES (?,?,?,?)",
+        "INSERT INTO cart (user_id, product_id, variant_id, quantity) VALUES (?, ?, ?, ?)",
         [userId, productId, variantId, quantity]
       );
       return result;
