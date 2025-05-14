@@ -1,17 +1,19 @@
 import express from "express";
-
 import {
   addItemToCart,
-  clearUserCart,
   getUserCart,
-  removeItem,
   updateItemQuantity,
+  removeItem,
+  clearUserCart,
 } from "../controllers/cartController.js";
+import { authenticateToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// Add item to cart
+// All cart routes require authentication
+router.use(authenticateToken);
 
+// Add item to cart
 router.post("/add", addItemToCart);
 
 // Get user's cart

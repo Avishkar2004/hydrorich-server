@@ -86,21 +86,11 @@ export const loginUser = async (req, res) => {
 
 export const getCurrentUser = async (req, res) => {
   try {
-    if (!req.user) {
+    if (!req.session.user) {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const user = await findUserByEmail(req.user.email);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    return res.json({
-      id: user.id,
-      name: user.name,
-      email: user.email,
-    });
+    return res.json(req.session.user);
   } catch (error) {
     console.error("Get current user error:", error);
     return res.status(401).json({ message: "Not authenticated" });

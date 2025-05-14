@@ -1,18 +1,14 @@
-export const isAuthenticated = (req, res, next) => {
-  const token = req.headers.authorization;
-  if (!token) {
+import jwt from "jsonwebtoken";
+
+export const authenticateToken = (req, res, next) => {
+  if (!req.session || !req.session.user) {
     return res.status(401).json({
       success: false,
+      message: "Access denied. Please log in.",
     });
   }
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (error) {
-    return res.status(401).json({
-      success: false,
-      message: "Invalid token",
-    });
-  }
+
+  // Add user info to request object
+  req.user = req.session.user;
+  next();
 };

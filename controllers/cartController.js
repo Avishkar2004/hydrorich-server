@@ -9,7 +9,14 @@ import {
 export const addItemToCart = async (req, res) => {
   try {
     const { productId, variantId, quantity } = req.body;
-    const userId = req.user.id;
+    const userId = req.user.id || req.session.user.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
 
     if (!productId || !variantId || !quantity) {
       return res.status(400).json({
@@ -34,12 +41,19 @@ export const addItemToCart = async (req, res) => {
 
 export const getUserCart = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.id || req.session.user.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
     const cartItems = await getCartItems(userId);
 
     res.status(200).json({
       success: true,
-      user: req.user, // Send full user info
       cart: cartItems,
     });
   } catch (error) {
@@ -97,7 +111,15 @@ export const removeItem = async (req, res) => {
 
 export const clearUserCart = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.id || req.session.user.id;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+    }
+
     await clearCart(userId);
 
     res.status(200).json({
