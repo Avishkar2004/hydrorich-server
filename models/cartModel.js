@@ -84,7 +84,9 @@ export const removeFromCart = async (cartId) => {
 
 export const clearCart = async (userId) => {
   try {
-    const [result] = await db.query("DELETE FROM cart WHERE user_id = ?", [userId]);
+    const [result] = await db.query("DELETE FROM cart WHERE user_id = ?", [
+      userId,
+    ]);
     return result;
   } catch (error) {
     console.error("Error clearing cart:", error);
