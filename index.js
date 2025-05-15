@@ -8,6 +8,7 @@ import "./config/passport.js";
 import pgrRouter from "./routes/pgrRoute.js";
 import authRouter from "./routes/authRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
+import wishlistRoutes from "./routes/wishlistRoutes.js";
 
 const app = express();
 
@@ -29,7 +30,7 @@ app.use(
     cookie: {
       secure: process.env.NODE_ENV === "production",
       maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
-      sameSite: 'lax',
+      sameSite: "lax",
       httpOnly: true,
     },
   })
@@ -86,6 +87,7 @@ app.use("/api", pgrRouter);
 
 app.use("/api/auth", authRouter);
 app.use("/api/cart", cartRoutes);
+app.use("/api/wishlist", wishlistRoutes);
 
 // ✅ Start server
 app.listen(process.env.PORT || 8080, () =>
