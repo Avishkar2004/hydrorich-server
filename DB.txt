@@ -148,3 +148,41 @@ VALUES
 (5, 'https://m.media-amazon.com/images/I/61w1QDBfHkL._AC_UF1000,1000_QL80_.jpg', 'Organic Neem Cake Front View'),
 (5, 'https://m.media-amazon.com/images/I/511w4zIhPpL.jpg', 'Neem Cake Granules Closeup');
 
+
+=======
+
+For micronutrient :-
+
+INSERT INTO products (name, description, category, in_stock)
+VALUES (
+  'GrowMic Micro Mix',
+  'A balanced blend of essential micronutrients including Zinc, Iron, Manganese, and Boron for overall plant health.',
+  'micronutrient',
+  TRUE
+);
+
+
+INSERT INTO product_variants (product_id, variant_name, unit, quantity, price, discount_percent, is_available)
+VALUES
+(6, '250 gm Pack', 'gm', 250, 100.00, 5, TRUE),
+(6, '500 gm Pack', 'gm', 500, 180.00, 10, TRUE),
+(6, '1 kg Pack', 'kg', 1, 330.00, 15, TRUE),
+(6, '2 kg Pack', 'kg', 2, 600.00, 20, TRUE);
+
+
+INSERT INTO dosages (variant_id, dosage_per_unit, usage_instructions)
+VALUES
+(34, '250gm per acre', 'Mix with 100L of water and spray during early vegetative stage.'),
+(35, '500gm per acre', 'Apply evenly with foliar spray. Repeat after 20 days.'),
+(36, '1kg per 2 acres', 'Use with drip irrigation or spray in two splits.'),
+(37, '2kg per 4 acres', 'Best for large farms. Mix well in water or compost and apply around root zone.');
+
+
+
+INSERT INTO product_photos (product_id, image_url, alt_text)
+VALUES
+(6, 'https://m.media-amazon.com/images/I/511xvEOiNIL._SL1080_.jpg', 'GrowMic Micro Mix Front View'),
+(6, 'https://m.media-amazon.com/images/I/61Nh2H+7ghL._SL1080_.jpg', 'GrowMic Micronutrient Contents'),
+(6, 'https://m.media-amazon.com/images/I/61hXZ+lhLnL._SL1080_.jpg', 'GrowMic Packaging'),
+(6, 'https://m.media-amazon.com/images/I/61BnmImHP9L._SL1080_.jpg', 'GrowMic Packaging'),
+(6, 'https://m.media-amazon.com/images/I/810g4p2Ek4L._SL1500_.jpg', 'GrowMic Packaging');
