@@ -66,6 +66,8 @@ CREATE TABLE wishlist (
 );
 
 INSERT INTO categories (name) VALUES ('plantgrowthregulator');
+INSERT INTO categories (name) VALUES ('organicFertilizers');
+INSERT INTO categories (name) VALUES ('micronutrient');
 INSERT INTO categories (name) VALUES ('Insecticide');
 INSERT INTO categories (name) VALUES ('Fungicide');
 
@@ -117,3 +119,32 @@ INSERT INTO product_photos (product_id, image_url, alt_text) VALUES
 (2, 'https://krushidukan.bharatagri.com/cdn/shop/files/Bayer_Ambition_20fea0b7-7b6d-4353-a017-89f0204230f6.webp?v=1724482283', 'Bayer Photo 1'),
 (2, 'https://krushidukan.bharatagri.com/cdn/shop/files/Bayer_Ambition_3_93a9be13-eaad-4337-892f-9f9787372180.webp?v=1735654648', 'Bayer Photo 2'),
 (2, "https://cdn.shopify.com/s/files/1/0722/2059/files/ambition-fungicide-file-9106.webp?v=1743405549", "Bayer Photo 3")
+
+
+===========
+
+For organicFertilizers :-
+
+INSERT INTO products (name, description, category, in_stock)
+VALUES ('Organic Neem Cake Fertilizer', 'A natural organic fertilizer made from neem seeds. Helps improve soil fertility and controls nematodes.', 'organicFertilizers', TRUE);
+
+INSERT INTO product_variants (product_id, variant_name, unit, quantity, price, discount_percent, is_available)
+VALUES
+(5, '1 kg Pack', 'kg', 1, 120.00, 10, TRUE),
+(5, '5 kg Pack', 'kg', 5, 550.00, 15, TRUE),
+(5, '10 kg Pack', 'kg', 10, 1000.00, 20, TRUE);
+
+
+INSERT INTO dosages (variant_id, dosage_per_unit, usage_instructions)
+VALUES
+(31, '500g per plant', 'Mix into topsoil before watering. Use monthly for best results.'),
+(32, '2kg per small tree', 'Apply around the root zone. Water thoroughly.'),
+(33, '5kg per medium tree', 'Spread evenly and mix with soil. Repeat every 2 months.');
+
+
+
+INSERT INTO product_photos (product_id, image_url, alt_text)
+VALUES
+(5, 'https://m.media-amazon.com/images/I/61w1QDBfHkL._AC_UF1000,1000_QL80_.jpg', 'Organic Neem Cake Front View'),
+(5, 'https://m.media-amazon.com/images/I/511w4zIhPpL.jpg', 'Neem Cake Granules Closeup');
+

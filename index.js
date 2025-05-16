@@ -6,6 +6,7 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import "./config/passport.js";
 import pgrRouter from "./routes/pgrRoute.js";
+import organicRouter from "./routes/organicRoutes.js";
 import authRouter from "./routes/authRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
@@ -84,6 +85,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", pgrRouter);
+app.use("/api", organicRouter);
 
 app.use("/api/auth", authRouter);
 app.use("/api/cart", cartRoutes);
