@@ -1,38 +1,38 @@
 import { db } from "../config/db.js";
 
-export const plantgrowthregulator = async (req, res) => {
+export const getInsecticides = async (req, res) => {
   const query = `
-    SELECT 
-      p.id AS product_id,
-      p.name AS product_name,
-      p.description,
-      p.in_stock,
-      pv.id AS variant_id,
-      pv.variant_name,
-      pv.unit,
-      pv.quantity,
-      pv.price,
-      pv.discount_percent,
-      pv.is_available,
-      d.dosage_per_unit,
-      d.usage_instructions,
-      (
-      SELECT ph.image_url
-      FROM product_photos ph
-      WHERE ph.product_id = p.id
-      ORDER BY ph.id ASC
-      LIMIT 1
-      ) AS image_url
-    FROM products p
-    LEFT JOIN product_variants pv ON p.id = pv.product_id
-    LEFT JOIN dosages d ON pv.id = d.variant_id
-    WHERE LOWER(p.category) = 'plantgrowthregulator'
-  `;
+    SELECT
+    p.id AS product_id,
+    p.name AS product_name,
+    p.description,
+    p.in_stock,
+    pv.id AS variant_id,
+    pv.variant_name,
+    pv.unit,
+    pv.price,
+    pv.discount_percent,
+    pv.is_available,
+    d.dosage_per_unit,
+    d.usage_instructions,
+    (
+    SELECT ph.image_url
+    FROM product_photos ph
+    WHERE ph.product_id = p.id
+    ORDER BY ph.id ASC
+    LIMIT 1
+    ) AS image_url
+     FROM products p
+     LEFT JOIN product_variants pv ON p.id  = pv.product_id
+     LEFT JOIN dosages d ON pv.id = d.variant_id
+     WHERE LOWER(p.category) = "insecticide"
+    `;
 
   try {
     const [rows] = await db.query(query);
 
     // Structure the response: Group variants and images under each product
+
     const productsMap = {};
 
     rows.forEach((row) => {
@@ -46,6 +46,7 @@ export const plantgrowthregulator = async (req, res) => {
           images: row.image_url ? [row.image_url] : [],
         };
       }
+
       if (row.variant_id) {
         productsMap[row.product_id].variants.push({
           id: row.variant_id,
@@ -70,8 +71,8 @@ export const plantgrowthregulator = async (req, res) => {
 
     const structuredData = Object.values(productsMap);
     res.json({ products: structuredData });
-  } catch (err) {
-    console.error("Database error:", err);
+  } catch (error) {
+    console.error("Database error:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

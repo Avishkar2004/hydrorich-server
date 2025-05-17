@@ -26,7 +26,6 @@ export const OrganicFertilizer = async (req, res) => {
      FROM products p
      LEFT JOIN product_variants pv ON p.id  = pv.product_id
      LEFT JOIN dosages d ON pv.id = d.variant_id
-     LEFT JOIN product_photos ph ON p.id = ph.product_id
      WHERE LOWER(p.category) = 'organicFertilizers'
     `;
 

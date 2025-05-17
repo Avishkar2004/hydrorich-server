@@ -186,3 +186,76 @@ VALUES
 (6, 'https://m.media-amazon.com/images/I/61hXZ+lhLnL._SL1080_.jpg', 'GrowMic Packaging'),
 (6, 'https://m.media-amazon.com/images/I/61BnmImHP9L._SL1080_.jpg', 'GrowMic Packaging'),
 (6, 'https://m.media-amazon.com/images/I/810g4p2Ek4L._SL1500_.jpg', 'GrowMic Packaging');
+
+
+=====
+
+ For Insecticide:-
+
+ INSERT INTO products (name, description, category, in_stock)
+VALUES (
+  'CropGuard Imida 70WG',
+  'A powerful systemic insecticide based on Imidacloprid 70% WG formulation. Effective against sucking pests in various crops.',
+  'Insecticide',
+  TRUE
+);
+
+INSERT INTO product_variants (product_id, variant_name, unit, quantity, price, discount_percent, is_available)
+VALUES
+(7, '100 gm Pack', 'gm', 100, 220.00, 5, TRUE),
+(7, '250 gm Pack', 'gm', 250, 500.00, 10, TRUE),
+(7, '500 gm Pack', 'gm', 500, 950.00, 12, TRUE),
+(7, '1 kg Pack', 'kg', 1, 1750.00, 15, TRUE);
+
+
+INSERT INTO dosages (variant_id, dosage_per_unit, usage_instructions)
+VALUES
+(38, '100gm per acre', 'Mix with 200L water and apply on affected areas early morning or late evening.'),
+(39, '250gm per 2 acres', 'Spray on both sides of leaves. Avoid during rain.'),
+(40, '500gm per 4 acres', 'Apply uniformly for maximum absorption.'),
+(41, '1kg per 8 acres', 'Use with high-pressure sprayer. Repeat every 15-20 days if needed.');
+
+
+INSERT INTO product_photos (product_id, image_url, alt_text)
+VALUES
+(7, 'https://agribegri.com/admin/images/prod_image/9144654751740463091.webp', 'CropGuard Imida 70WG Front View'),
+(7, 'https://agribegri.com/admin/images/prod_image/de935b06db9b8cadb57c428fdacd80b5-02-25-25-11-27-39.webp', 'CropGuard Pouch Back View'),
+(7, 'https://agribegri.com/admin/images/prod_image/a54259ba9e3adfd03f84a8c1f56dc31c-02-25-25-11-27-47.webp', 'CropGuard Imida Granules Closeup'),
+(7, 'https://agribegri.com/admin/images/prod_image/55b61e283aa6f0c191905374e69686da-02-25-25-11-27-55.webp', 'CropGuard Imida Granules Closeup'),
+(7, 'https://agribegri.com/admin/images/prod_image/8f377770fb5042505e4c14d71fa1aa90-02-25-25-11-28-03.webp', 'CropGuard Imida Granules Closeup');
+
+
+
+
+=============
+
+query :-
+
+ const query = `
+    SELECT 
+      p.id AS product_id,
+      p.name AS product_name,
+      p.description,
+      p.in_stock,
+      pv.id AS variant_id,
+      pv.variant_name,
+      pv.unit,
+      pv.quantity,
+      pv.price,
+      pv.discount_percent,
+      pv.is_available,
+      d.dosage_per_unit,
+      d.usage_instructions,
+      (
+      SELECT ph.image_url
+      FROM product_photos ph
+      WHERE ph.product_id = p.id
+      ORDER BY ph.id ASC
+      LIMIT 1
+      ) AS image_url
+    FROM products p
+    LEFT JOIN product_variants pv ON p.id = pv.product_id
+    LEFT JOIN dosages d ON pv.id = d.variant_id
+    LEFT JOIN product_photos ph ON p.id = ph.product_id
+    WHERE LOWER(p.category) = 'plantgrowthregulator'
+  `;

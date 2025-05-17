@@ -7,10 +7,11 @@ import cookieParser from "cookie-parser";
 import "./config/passport.js";
 import pgrRouter from "./routes/pgrRoute.js";
 import organicRouter from "./routes/organicRoutes.js";
+import MicronutrientRoutes from "./routes/MicronutrientRoutes.js";
+import Insecticide from "./routes/InsecticideRoutes.js";
 import authRouter from "./routes/authRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
-import MicronutrientRoutes from "./routes/MicronutrientRoutes.js";
 
 const app = express();
 
@@ -88,6 +89,7 @@ app.get("/", (req, res) => {
 app.use("/api", pgrRouter);
 app.use("/api", organicRouter);
 app.use("/api", MicronutrientRoutes);
+app.use("/api", Insecticide);
 
 app.use("/api/auth", authRouter);
 app.use("/api/cart", cartRoutes);
