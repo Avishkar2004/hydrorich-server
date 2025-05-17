@@ -225,13 +225,42 @@ VALUES
 (7, 'https://agribegri.com/admin/images/prod_image/8f377770fb5042505e4c14d71fa1aa90-02-25-25-11-28-03.webp', 'CropGuard Imida Granules Closeup');
 
 
-
-
 =============
 
-query :-
+For Fungicide :-
 
- const query = `
+INSERT INTO products (name, description, category, in_stock)
+VALUES (
+  'ShieldMax Azoxy Plus',
+  'Broad-spectrum fungicide combining Azoxystrobin and Difenoconazole for effective control of fungal diseases in crops like rice, wheat, and vegetables.',
+  'Fungicide',
+  TRUE
+);
+
+INSERT INTO product_variants (product_id, variant_name, unit, quantity, price, discount_percent, is_available)
+VALUES
+(8, '100 ml Bottle', 'ml', 100, 250.00, 5, TRUE),
+(8, '250 ml Bottle', 'ml', 250, 580.00, 8, TRUE),
+(8, '500 ml Bottle', 'ml', 500, 1050.00, 10, TRUE),
+(8, '1 Litre Bottle', 'litre', 1, 1980.00, 12, TRUE);
+
+
+
+INSERT INTO dosages (variant_id, dosage_per_unit, usage_instructions)
+VALUES
+(42, '100ml per acre', 'Mix with 200L water. Apply at early disease symptoms for best control.'),
+(43, '250ml per 2.5 acres', 'Ensure uniform coverage. Avoid spraying during rain.'),
+(44, '500ml per 5 acres', 'Use during flowering stage for disease resistance.'),
+(45, '1L per 10 acres', 'Apply in early morning or evening. Repeat every 10–15 days as needed.');
+
+
+INSERT INTO product_photos (product_id, image_url, alt_text)
+VALUES
+(8, 'https://krushidukan.bharatagri.com/cdn/shop/files/Aimco_Azoxy_Plus.webp?v=1742184809', 'ShieldMax Azoxy Plus Bottle Front');
+
+
+
+
     SELECT 
       p.id AS product_id,
       p.name AS product_name,

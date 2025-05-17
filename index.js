@@ -8,7 +8,8 @@ import "./config/passport.js";
 import pgrRouter from "./routes/pgrRoute.js";
 import organicRouter from "./routes/organicRoutes.js";
 import MicronutrientRoutes from "./routes/MicronutrientRoutes.js";
-import Insecticide from "./routes/InsecticideRoutes.js";
+import InsecticideRoutes from "./routes/InsecticideRoutes.js";
+import fungicideRouter from "./routes/fungicideRoute.js";
 import authRouter from "./routes/authRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
@@ -89,7 +90,8 @@ app.get("/", (req, res) => {
 app.use("/api", pgrRouter);
 app.use("/api", organicRouter);
 app.use("/api", MicronutrientRoutes);
-app.use("/api", Insecticide);
+app.use("/api", InsecticideRoutes);
+app.use("/api", fungicideRouter);
 
 app.use("/api/auth", authRouter);
 app.use("/api/cart", cartRoutes);
