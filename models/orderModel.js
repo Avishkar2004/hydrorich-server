@@ -100,58 +100,65 @@ export const getUserOrders = async (userId) => {
   try {
     const [orders] = await db.query(
       `
-            SELECT 
-              o.*,
-              COALESCE(
+              SELECT 
+                o.*,
                 JSON_ARRAYAGG(
-                  IFNULL(
-                    JSON_OBJECT(
-                      "id", oi.id,
-                      "product_id", oi.product_id,
-                      "variant_id", oi.variant_id,
-                      "quantity", oi.quantity,
-                      "price_per_unit", oi.price_per_unit,
-                      "total_price", oi.total_price
-                    ),
-                    NULL
+                  JSON_OBJECT(
+                    'id', oi.id,
+                    'product_id', oi.product_id,
+                    'variant_id', oi.variant_id,
+                    'quantity', oi.quantity,
+                    'price_per_unit', oi.price_per_unit,
+                    'total_price', oi.total_price,
+                    'product_name', p.name,
+                    'image_url', (SELECT image_url FROM product_photos WHERE product_id = p.id LIMIT 1)
                   )
-                ),
-                JSON_ARRAY()
-              ) AS items
-            FROM orders o
-            LEFT JOIN order_items oi ON o.id = oi.order_id
-            WHERE o.user_id = ?
-            GROUP BY o.id
-            ORDER BY o.created_at DESC
-        `,
+                ) AS items
+              FROM orders o
+              LEFT JOIN order_items oi ON o.id = oi.order_id
+              LEFT JOIN products p ON oi.product_id = p.id
+              WHERE o.user_id = ?
+              GROUP BY o.id
+              ORDER BY o.created_at DESC
+          `,
       [userId]
     );
 
     return orders.map((order) => {
       try {
-        // Handle the items array
+        // Parse items only if it's a string
         let items = [];
-        if (order.items && order.items !== '[null]' && order.items !== '[]') {
-          items = JSON.parse(order.items).filter(item => item !== null);
+        if (typeof order.items === "string") {
+          try {
+            const parsedItems = JSON.parse(order.items);
+            items = Array.isArray(parsedItems) ? parsedItems : [];
+          } catch (parseError) {
+            console.error("Error parsing items:", parseError);
+            items = [];
+          }
+        } else if (Array.isArray(order.items)) {
+          items = order.items;
         }
 
-        // Handle the shipping address
+        // Parse shipping_address only if it's a string
         let shipping_address = {};
-        if (order.shipping_address) {
+        if (typeof order.shipping_address === "string") {
           shipping_address = JSON.parse(order.shipping_address);
+        } else if (typeof order.shipping_address === "object") {
+          shipping_address = order.shipping_address;
         }
 
         return {
           ...order,
           items,
-          shipping_address
+          shipping_address,
         };
       } catch (parseError) {
-        console.error('Error parsing order data:', parseError);
+        console.error("Error parsing order data:", parseError);
         return {
           ...order,
           items: [],
-          shipping_address: {}
+          shipping_address: {},
         };
       }
     });
