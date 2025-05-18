@@ -14,6 +14,7 @@ import authRouter from "./routes/authRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
 import allProductsRouter from "./routes/allProductsRoute.js";
+import orderRoutes from "./routes/orderRoutes.js";
 
 const app = express();
 
@@ -94,6 +95,7 @@ app.use("/api", MicronutrientRoutes);
 app.use("/api", InsecticideRoutes);
 app.use("/api", fungicideRouter);
 app.use("/api/products", allProductsRouter);
+app.use("/api/orders", orderRoutes);
 
 app.use("/api/auth", authRouter);
 app.use("/api/cart", cartRoutes);
