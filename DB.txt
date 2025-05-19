@@ -1,4 +1,10 @@
--- Products table
+-- TABLE'S
+
+ALTER TABLE users ADD COLUMN role ENUM('user', 'admin') DEFAULT 'user';
+UPDATE users SET role = 'admin' WHERE email = 'avishkarkakde2004@gmail.com';
+-- ALTER TABLE users MODIFY id VARCHAR(255) NOT NULL DEFAULT (UUID());
+
+
 CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
@@ -21,19 +27,6 @@ CREATE TABLE product_variants (
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
--- Cart table
-CREATE TABLE cart (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
-    product_id INT,
-    variant_id INT,
-    quantity INT NOT NULL DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
-    FOREIGN KEY (variant_id) REFERENCES product_variants(id) ON DELETE CASCADE
-);
 
 -- Dosages table (optional, only for variants that have dosage)
 CREATE TABLE dosages (
@@ -53,10 +46,24 @@ CREATE TABLE product_photos (
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
+-- Cart table
+CREATE TABLE cart (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(255),
+    product_id INT,
+    variant_id INT,
+    quantity INT NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
+    FOREIGN KEY (variant_id) REFERENCES product_variants(id) ON DELETE CASCADE
+);
+
 -- Wishlist table
 CREATE TABLE wishlist (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT,
+    user_id VARCHAR(255),
     product_id INT,
     variant_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -64,6 +71,10 @@ CREATE TABLE wishlist (
     FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE,
     FOREIGN KEY (variant_id) REFERENCES product_variants(id) ON DELETE CASCADE
 );
+
+ALTER TABLE wishlist 
+MODIFY COLUMN id VARCHAR(250) NOT NULL DEFAULT (UUID());
+
 
 -- Orders table
 CREATE TABLE orders (

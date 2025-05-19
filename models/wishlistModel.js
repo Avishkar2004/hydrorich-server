@@ -1,7 +1,9 @@
 import { db } from "../config/db.js";
+import { v4 as uuidv4 } from "uuid";
 
 export const addToWishlist = async (userId, productId, variantId) => {
   try {
+    const id = uuidv4(); // Generate UUID
     const [existing] = await db.query(
       "SELECT * FROM wishlist WHERE user_id = ? AND product_id = ? AND variant_id = ?",
       [userId, productId, variantId]
@@ -14,7 +16,7 @@ export const addToWishlist = async (userId, productId, variantId) => {
         "INSERT INTO wishlist (user_id, product_id, variant_id) VALUES(?,?,?)",
         [userId, productId, variantId]
       );
-      return { success: true, insertId: result.insertId };
+      return { success: true, insertId: id }; // return id instead of result.insertId (since UUID is manual)
     }
   } catch (error) {
     console.error("Error adding to wishlist:", error);
