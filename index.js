@@ -5,6 +5,13 @@ import passport from "passport";
 import session from "express-session";
 import cookieParser from "cookie-parser";
 import "./config/passport.js";
+import {
+  apiLimiter,
+  authLimiter,
+  invoiceLimiter,
+  orderLimiter,
+  searchLimiter,
+} from "./middleware/rateLimiter.js";
 import pgrRouter from "./routes/pgrRoute.js";
 import organicRouter from "./routes/organicRoutes.js";
 import MicronutrientRoutes from "./routes/MicronutrientRoutes.js";
@@ -42,6 +49,15 @@ app.use(
     },
   })
 );
+
+// Apply general rate limiter to all routes
+app.use(apiLimiter);
+
+// Apply specific rate limiter to routes
+app.use("/api/auth", authLimiter);
+app.use("/api/orders", orderLimiter);
+app.use("/api/invoices", invoiceLimiter);
+app.use("/api/products/search", searchLimiter);
 
 app.use(passport.initialize());
 app.use(passport.session());

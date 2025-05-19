@@ -350,15 +350,11 @@ Product comparison feature
 Stock management system
 Shopping Experience
 Improve cart functionality
-Add wishlist features
 Implement product recommendations
-Add bulk ordering options
-Price comparison with other sellers
-Order System
 Order tracking
 Multiple shipping options
 Order status updates
-Invoice generation
+Invoice generation === Done
 Return/refund management
 Payment Integration
 Add multiple payment gateways
@@ -391,4 +387,4 @@ Live chat support
 Product notifications
 Social media integration
 Blog/News section
-FAQ section
+FAQ section === Done
