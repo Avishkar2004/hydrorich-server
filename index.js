@@ -15,6 +15,7 @@ import cartRoutes from "./routes/cartRoutes.js";
 import wishlistRoutes from "./routes/wishlistRoutes.js";
 import allProductsRouter from "./routes/allProductsRoute.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import invoiceRoutes from "./routes/invoiceRoutes.js";
 
 const app = express();
 
@@ -63,7 +64,7 @@ app.get(
       id: req.user.id,
       name: req.user.name,
       email: req.user.email,
-      provider: req.user.provider
+      provider: req.user.provider,
     };
 
     res.redirect(`${process.env.CLIENT_URL}`);
@@ -99,6 +100,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/auth", authRouter);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/invoices", invoiceRoutes);
 
 // ✅ Start server
 app.listen(process.env.PORT || 8080, () =>
