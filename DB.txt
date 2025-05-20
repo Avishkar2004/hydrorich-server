@@ -370,7 +370,6 @@ Product management
 Discount/coupon management
 Mobile Responsiveness
 Optimize for mobile devices
-Add PWA features
 Implement mobile-specific UI improvements
 Performance Optimization
 Implement caching
@@ -378,7 +377,7 @@ Optimize database queries
 Add image optimization
 Implement lazy loading
 Security Enhancements
-Add rate limiting
+Add rate limiting === Done
 Implement CSRF protection
 Add input validation
 Secure API endpoints

@@ -23,6 +23,7 @@ import wishlistRoutes from "./routes/wishlistRoutes.js";
 import allProductsRouter from "./routes/allProductsRoute.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
+import cacheMiddleware from "./middleware/redisCache.js";
 
 const app = express();
 
@@ -110,7 +111,7 @@ app.use("/api", organicRouter);
 app.use("/api", MicronutrientRoutes);
 app.use("/api", InsecticideRoutes);
 app.use("/api", fungicideRouter);
-app.use("/api/products", allProductsRouter);
+app.use("/api/products", cacheMiddleware(3600), allProductsRouter);
 app.use("/api/orders", orderRoutes);
 
 app.use("/api/auth", authRouter);

@@ -19,6 +19,7 @@
     "express": "^5.1.0",
     "express-rate-limit": "^7.5.0",
     "express-session": "^1.18.1",
+    "ioredis": "^5.6.1",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.14.1",
     "nodemailer": "^7.0.3",
@@ -26,6 +27,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "pdfkit": "^0.17.1",
+    "redis": "^5.0.1",
     "uuid": "^11.1.0"
   }
 }

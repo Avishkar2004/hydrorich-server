@@ -1,0 +1,5 @@
+How to start Server With Redis if its not installed already :-
+
+Use this command :- "docker-compose up -d"
+
+then npm run dev
