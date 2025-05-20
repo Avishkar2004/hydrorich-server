@@ -4,6 +4,7 @@ import cors from "cors";
 import passport from "passport";
 import session from "express-session";
 import cookieParser from "cookie-parser";
+import compression from "compression";
 import "./config/passport.js";
 import {
   apiLimiter,
@@ -26,6 +27,9 @@ import invoiceRoutes from "./routes/invoiceRoutes.js";
 import cacheMiddleware from "./middleware/redisCache.js";
 
 const app = express();
+
+// Enable compression for all routes
+app.use(compression({ threshold: 1024 })); // Only compress responses larger than 1KB
 
 app.use(
   cors({
