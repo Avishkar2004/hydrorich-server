@@ -24,6 +24,7 @@ import wishlistRoutes from "./routes/wishlistRoutes.js";
 import allProductsRouter from "./routes/allProductsRoute.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import cacheMiddleware from "./middleware/redisCache.js";
 
 const app = express();
@@ -35,6 +36,8 @@ app.use(
   cors({
     origin: process.env.CLIENT_URL,
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
@@ -44,8 +47,8 @@ app.use(cookieParser());
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     cookie: {
       secure: process.env.NODE_ENV === "production",
       maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
@@ -122,6 +125,7 @@ app.use("/api/auth", authRouter);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/invoices", invoiceRoutes);
+app.use("/api/admin", adminRoutes);
 
 // ✅ Start server
 app.listen(process.env.PORT || 8080, () =>

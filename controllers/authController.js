@@ -67,16 +67,22 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Set user in session
+    // Set user in session with role
     req.session.user = {
       id: user.id,
       email: user.email,
       name: user.name,
+      role: user.role,
     };
 
     return res.status(200).json({
       success: true,
-      user: { id: user.id, name: user.name, email: user.email },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -90,9 +96,27 @@ export const getCurrentUser = async (req, res) => {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    return res.json(req.session.user);
+    // Fetch fresh user data from database
+    const user = await findUserByEmail(req.session.user.email);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update session with complete user data
+    req.session.user = {
+      ...user,
+      role: user.role || 'user'
+    };
+    
+    console.log('Current user session:', {
+      email: req.session.user.email,
+      role: req.session.user.role,
+      sessionID: req.session.id
+    });
+
+    res.json(req.session.user);
   } catch (error) {
-    console.error("Get current user error:", error);
-    return res.status(401).json({ message: "Not authenticated" });
+    console.error("Error in getCurrentUser:", error);
+    res.status(500).json({ message: "Error fetching user data" });
   }
 };
