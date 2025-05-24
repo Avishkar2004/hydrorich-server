@@ -26,6 +26,7 @@ import orderRoutes from "./routes/orderRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import cacheMiddleware from "./middleware/redisCache.js";
+import productRoutes from "./routes/productRoutes.js";
 
 const app = express();
 
@@ -126,6 +127,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/products", productRoutes);
 
 // ✅ Start server
 app.listen(process.env.PORT || 8080, () =>
