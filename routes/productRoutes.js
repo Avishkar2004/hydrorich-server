@@ -11,4 +11,4 @@ router.post("/add", isAdmin, upload.array("photos", 5), addProduct);
 // Public routes
 router.get("/:id", getProduct);
 
-export default router; 
+export default router;

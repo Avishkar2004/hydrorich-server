@@ -19,3 +19,4 @@ export const uploadToCloudinary = async (filePath) => {
         throw new Error(`Error uploading to Cloudinary: ${error.message}`);
     }
 }; 
+
