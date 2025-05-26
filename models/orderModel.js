@@ -63,7 +63,7 @@ export const getOrderById = async (orderId) => {
   try {
     const [order] = await db.query(
       `
-            SELECT o.*,
+           SELECT o.*,
             JSON_ARRAYAGG(
                 JSON_OBJECT(
                 "id", oi.id,
@@ -71,14 +71,17 @@ export const getOrderById = async (orderId) => {
                 "variant_id", oi.variant_id,
                 "quantity", oi.quantity,
                 "price_per_unit", oi.price_per_unit,
-                "total_price", oi.total_price
+                "total_price", oi.total_price,
+                "product_name", p.name,
+                "image_url", (SELECT image_url FROM product_photos WHERE product_id = p.id LIMIT 1)
                 )
             ) AS items
              FROM orders o
              LEFT JOIN order_items oi ON o.id = oi.order_id
+             LEFT JOIN products p ON oi.product_id = p.id
              WHERE o.id = ?
-             GROUP BY o.id,
-
+             GROUP BY o.id, o.user_id, o.order_number, o.total_amount, o.payment_method, 
+                      o.shipping_address, o.status, o.payment_status, o.created_at, o.updated_at
             `,
       [orderId]
     );
@@ -86,10 +89,38 @@ export const getOrderById = async (orderId) => {
       return null;
     }
 
-    // Parse the items JSON string
-    order[0].item = JSON.parse(order[0].items);
-    order[0].shipping_address = JSON.parse(order[0].shipping_address);
-    return order[0];
+    // Parse items only if it's a string
+
+    let items = [];
+    if (typeof order[0].items === "string") {
+      try {
+        const parsedItems = JSON.parse(order[0].items);
+        items = Array.isArray(parsedItems) ? parsedItems : [];
+      } catch (Parseerror) {
+        console.error("Error parsing items:", Parseerror);
+        items = [];
+      }
+    } else if (Array.isArray(order[0].items)) {
+      items = order[0].items;
+    }
+
+    // Parse shipping_address only if it's a string
+    let shipping_address = {};
+    if (typeof order[0].shipping_address === "string") {
+      try {
+        shipping_address = JSON.parse(order[0].shipping_address);
+      } catch (Parseerror) {
+        console.error("Error parsing shipping address:", Parseerror);
+        shipping_address = {};
+      }
+    } else if (typeof order[0].shipping_address === "object") {
+      shipping_address = order[0].shipping_address;
+    }
+    return {
+      ...order[0],
+      items,
+      shipping_address,
+    };
   } catch (error) {
     console.error("Error getting order:", error);
     throw error;

@@ -22,7 +22,7 @@ export const authLimiter = rateLimit({
 // Limiter for order creation
 export const orderLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 10, // Limit each IP to 10 orders per hour
+  max: 100, // Limit each IP to 10 orders per hour
   message: "Too many orders from this IP, please try again after an hour",
   standardHeaders: true,
   legacyHeaders: false,
