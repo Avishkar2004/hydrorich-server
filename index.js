@@ -27,8 +27,50 @@ import invoiceRoutes from "./routes/invoiceRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import cacheMiddleware from "./middleware/redisCache.js";
 import productRoutes from "./routes/productRoutes.js";
+import http from "http";
+import { Server } from "socket.io";
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
+
+// Socket.io connection handling
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+
+  // Join order tracking room
+  socket.on("join_order_tracking", (orderId) => {
+    socket.join(`order_${orderId}`);
+    console.log(
+      `User ${socket.id} joined order tracking room: order_${orderId}`
+    );
+  });
+
+  // Leave order tracking room
+  socket.on("leave_order_tracking", (orderId) => {
+    socket.leave(`order_${orderId}`);
+    console.log(`User ${socket.id} left order tracking room: order_${orderId}`);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+  });
+});
+
+// Function to emit order status updates
+export const emitOrderStatusUpdate = (orderId, status) => {
+  io.to(`order_${orderId}`).emit("order_status_update", {
+    orderId,
+    status,
+    timestamp: new Date(),
+  });
+};
 
 // Enable compression for all routes
 app.use(compression({ threshold: 1024 })); // Only compress responses larger than 1KB
@@ -130,6 +172,6 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 
 // ✅ Start server
-app.listen(process.env.PORT || 8080, () =>
+server.listen(process.env.PORT || 8080, () =>
   console.log(`🚀 Server running on port ${process.env.PORT}`)
 );

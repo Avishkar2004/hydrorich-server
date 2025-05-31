@@ -1,6 +1,7 @@
 import express from "express";
 import * as orderController from "../controllers/orderController.js";
 import { authenticateToken } from "../middleware/auth.js";
+import { emitOrderStatusUpdate } from '../index.js';
 
 const router = express.Router();
 
@@ -17,6 +18,29 @@ router.get("/:id", orderController.getOrder);
 router.get("/", orderController.getUserOrders);
 
 // Update order status
-router.patch("/:orderId/status", orderController.updateOrderStatus);
+router.put("/:orderId/status", async (req, res) => {
+    try {
+        const { orderId } = req.params;
+        const { status } = req.body;
+
+        const order = await Order.findByIdAndUpdate(
+            orderId,
+            { status },
+            { new: true }
+        );
+
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+        // Emit order status update through Socket.io
+        emitOrderStatusUpdate(orderId, status);
+
+        res.json(order);
+    } catch (error) {
+        console.error("Error updating order status:", error);
+        res.status(500).json({ message: "Error updating order status" });
+    }
+});
 
 export default router;

@@ -116,6 +116,33 @@ CREATE TABLE order_items (
 
 
 
+=====
+
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    order_number VARCHAR(50) UNIQUE NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    currency VARCHAR(3) NOT NULL DEFAULT 'USD',
+    status ENUM(
+        'pending', 'confirmed', 'processing', 'shipped', 'out_for_delivery',
+        'delivered', 'cancelled', 'returned', 'refunded'
+    ) DEFAULT 'pending',
+    payment_method VARCHAR(50) NOT NULL,
+    payment_status ENUM(
+        'pending', 'authorized', 'paid', 'failed', 'refunded', 'partially_refunded'
+    ) DEFAULT 'pending',
+    discount_amount DECIMAL(10, 2) DEFAULT 0.00,
+    shipping_cost DECIMAL(10, 2) DEFAULT 0.00,
+    tax_amount DECIMAL(10, 2) DEFAULT 0.00,
+    shipping_address JSON NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+====
+
 
 INserted Data :-
 -- Insert products
@@ -478,289 +505,3 @@ Compression middleware === Done
 Image optimization
 Code splitting === Done
 Lazy loading
-
-
-import React from 'react';
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    BarElement,
-    ArcElement,
-    Title,
-    Tooltip,
-    Legend,
-    RadialLinearScale,
-    Filler,
-} from 'chart.js';
-import { Line, Bar, Doughnut } from 'react-chartjs-2';
-
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    PointElement,
-    LineElement,
-    BarElement,
-    ArcElement,
-    Title,
-    Tooltip,
-    Legend,
-    RadialLinearScale,
-    Filler
-);
-
-const DashboardCharts = ({ stats, previousStats }) => {
-    // Performance Metrics Data
-    const performanceData = {
-        labels: ['Users', 'Orders', 'Products', 'Revenue'],
-        datasets: [
-            {
-                label: 'Current Period',
-                data: [
-                    stats?.totalUsers || 0,
-                    stats?.totalOrders || 0,
-                    stats?.totalProducts || 0,
-                    stats?.totalRevenue || 0
-                ],
-                backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                borderColor: 'rgb(59, 130, 246)',
-                borderWidth: 2,
-                borderRadius: 8,
-                barThickness: 40,
-                maxBarThickness: 50,
-            },
-            {
-                label: 'Previous Period',
-                data: [
-                    previousStats?.totalUsers || 0,
-                    previousStats?.totalOrders || 0,
-                    previousStats?.totalProducts || 0,
-                    previousStats?.totalRevenue || 0
-                ],
-                backgroundColor: 'rgba(156, 163, 175, 0.7)',
-                borderColor: 'rgb(156, 163, 175)',
-                borderWidth: 2,
-                borderRadius: 8,
-                barThickness: 40,
-                maxBarThickness: 50,
-            }
-        ]
-    };
-
-    // Order Analytics Data
-    const orderAnalyticsData = {
-        labels: stats?.recentOrders?.map(order => order.order_number) || [],
-        datasets: [
-            {
-                label: 'Order Amount',
-                data: stats?.recentOrders?.map(order => order.total_amount) || [],
-                backgroundColor: 'rgba(16, 185, 134, 0.2)',
-                borderColor: 'rgb(16, 185, 134)',
-                borderWidth: 3,
-                tension: 0.4,
-                fill: true,
-                pointBackgroundColor: 'rgb(16, 185, 134)',
-                pointBorderColor: '#fff',
-                pointBorderWidth: 2,
-                pointRadius: 4,
-                pointHoverRadius: 6,
-            }
-        ]
-    };
-
-    // Payment Status Distribution
-    const paymentStatusData = {
-        labels: ['Completed', 'Pending', 'Failed'],
-        datasets: [
-            {
-                data: [
-                    stats?.recentOrders?.filter(order => order.payment_status === 'completed').length || 0,
-                    stats?.recentOrders?.filter(order => order.payment_status === 'pending').length || 0,
-                    stats?.recentOrders?.filter(order => order.payment_status === 'failed').length || 0
-                ],
-                backgroundColor: [
-                    'rgba(16, 185, 134, 0.8)',
-                    'rgba(245, 158, 11, 0.8)',
-                    'rgba(239, 68, 68, 0.8)'
-                ],
-                borderColor: [
-                    'rgb(16, 185, 134)',
-                    'rgb(245, 158, 11)',
-                    'rgb(239, 68, 68)'
-                ],
-                borderWidth: 2,
-                hoverOffset: 15,
-            }
-        ]
-    };
-
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'top',
-                labels: {
-                    padding: 20,
-                    font: {
-                        size: 12,
-                        weight: '600'
-                    }
-                }
-            },
-            title: {
-                display: true,
-                font: {
-                    size: 16,
-                    weight: 'bold'
-                },
-                padding: {
-                    top: 10,
-                    bottom: 20
-                }
-            },
-            tooltip: {
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                titleColor: '#1f2937',
-                bodyColor: '#4b5563',
-                borderColor: '#e5e7eb',
-                borderWidth: 1,
-                padding: 12,
-                boxPadding: 6,
-                usePointStyle: true,
-                callbacks: {
-                    label: function(context) {
-                        let label = context.dataset.label || '';
-                        if (label) {
-                            label += ': ';
-                        }
-                        if (context.parsed.y !== undefined) {
-                            label += new Intl.NumberFormat('en-IN', {
-                                style: 'currency',
-                                currency: 'INR'
-                            }).format(context.parsed.y);
-                        }
-                        return label;
-                    }
-                }
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                grid: {
-                    color: 'rgba(0, 0, 0, 0.05)',
-                    drawBorder: false
-                },
-                ticks: {
-                    font: {
-                        size: 12
-                    },
-                    padding: 10
-                }
-            },
-            x: {
-                grid: {
-                    display: false
-                },
-                ticks: {
-                    font: {
-                        size: 12
-                    },
-                    padding: 10
-                }
-            }
-        },
-        animation: {
-            duration: 2000,
-            easing: 'easeInOutQuart'
-        }
-    };
-
-    const doughnutOptions = {
-        ...chartOptions,
-        cutout: '70%',
-        plugins: {
-            ...chartOptions.plugins,
-            legend: {
-                ...chartOptions.plugins.legend,
-                position: 'bottom',
-                labels: {
-                    ...chartOptions.plugins.legend.labels,
-                    usePointStyle: true,
-                    pointStyle: 'circle'
-                }
-            }
-        }
-    };
-
-    return (
-        <div className="space-y-8">
-            {/* Performance Metrics */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Performance Metrics</h2>
-                <div className="h-96">
-                    <Bar
-                        data={performanceData}
-                        options={{
-                            ...chartOptions,
-                            plugins: {
-                                ...chartOptions.plugins,
-                                title: {
-                                    ...chartOptions.plugins.title,
-                                    text: 'Performance Comparison'
-                                }
-                            }
-                        }}
-                    />
-                </div>
-            </div>
-
-            {/* Order Analytics */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Order Analytics</h2>
-                <div className="h-96">
-                    <Line
-                        data={orderAnalyticsData}
-                        options={{
-                            ...chartOptions,
-                            plugins: {
-                                ...chartOptions.plugins,
-                                title: {
-                                    ...chartOptions.plugins.title,
-                                    text: 'Recent Orders Trend'
-                                }
-                            }
-                        }}
-                    />
-                </div>
-            </div>
-
-            {/* Payment Status Distribution */}
-            <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 transform transition-all duration-300 hover:shadow-xl">
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Payment Status Distribution</h2>
-                <div className="h-96 flex justify-center items-center">
-                    <div className="w-96">
-                        <Doughnut
-                            data={paymentStatusData}
-                            options={{
-                                ...doughnutOptions,
-                                plugins: {
-                                    ...doughnutOptions.plugins,
-                                    title: {
-                                        ...doughnutOptions.plugins.title,
-                                        text: 'Payment Status Overview'
-                                    }
-                                }
-                            }}
-                        />
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-export default DashboardCharts; 

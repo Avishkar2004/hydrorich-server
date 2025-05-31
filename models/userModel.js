@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export const findUserByEmail = async (email) => {
   try {
-    console.log("Finding user by email:", email);
+    // console.log("Finding user by email:", email);
     const [rows] = await db.query(
       "SELECT id, name, email, password, provider, role, created_at FROM users WHERE email = ?",
       [email]
