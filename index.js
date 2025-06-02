@@ -169,7 +169,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/products", productRoutes);
+app.use("/api/get-products", productRoutes);
 
 // ✅ Start server
 server.listen(process.env.PORT || 8080, () =>

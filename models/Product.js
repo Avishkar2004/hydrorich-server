@@ -116,6 +116,45 @@ class Product {
       throw new Error(`Error fetching product: ${error.message}`);
     }
   }
+
+  static async search(query) {
+    try {
+      const searchQuery = `%${query}%`;
+
+      // Search in products table
+      const [products] = await db.query(
+        `SELECT p.*, 
+                GROUP_CONCAT(DISTINCT pp.image_url) as images,
+                MIN(pv.price) as min_price,
+                MAX(pv.price) as max_price
+         FROM products p
+         LEFT JOIN product_photos pp ON p.id = pp.product_id
+         LEFT JOIN product_variants pv ON p.id = pv.product_id
+         WHERE p.name LIKE ? 
+         OR p.description LIKE ? 
+         OR p.category LIKE ?
+         GROUP BY p.id
+         LIMIT 10`,
+        [searchQuery, searchQuery, searchQuery]
+      );
+
+      // Format the results
+      return products.map((product) => ({
+        _id: product.id,
+        name: product.name,
+        description: product.description,
+        category: product.category,
+        images: product.images ? product.images.split(",") : [],
+        price: product.min_price,
+        priceRange:
+          product.min_price !== product.max_price
+            ? { min: product.min_price, max: product.max_price }
+            : null,
+      }));
+    } catch (error) {
+      throw new Error(`Error searching products: ${error.message}`);
+    }
+  }
 }
 
 export default Product;

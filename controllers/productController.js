@@ -75,3 +75,27 @@ export const getProduct = async (req, res) => {
     });
   }
 };
+
+export const searchProducts = async (req, res) => {
+  try {
+    const { q } = req.query;
+
+    if (!q) {
+      return res.status(400).json({
+        success: false,
+        message: "Search query is required",
+      });
+    }
+
+    const results = await Product.search(q);
+
+    res.status(200).json(results);
+  } catch (error) {
+    console.error("Search error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error searching products",
+      error: error.message,
+    });
+  }
+};
