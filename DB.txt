@@ -504,4 +504,4 @@ Performance:
 Compression middleware === Done
 Image optimization
 Code splitting === Done
-Lazy loading
+Lazy loading 
