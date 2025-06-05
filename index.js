@@ -12,6 +12,7 @@ import {
   invoiceLimiter,
   orderLimiter,
   searchLimiter,
+  contactLimiter
 } from "./middleware/rateLimiter.js";
 import pgrRouter from "./routes/pgrRoute.js";
 import organicRouter from "./routes/organicRoutes.js";
@@ -25,6 +26,7 @@ import allProductsRouter from "./routes/allProductsRoute.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js"
 import cacheMiddleware from "./middleware/redisCache.js";
 import productRoutes from "./routes/productRoutes.js";
 import http from "http";
@@ -170,6 +172,7 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/get-products", productRoutes);
+app.use("/api/contact", contactLimiter, contactRoutes);
 
 // ✅ Start server
 server.listen(process.env.PORT || 8080, () =>
