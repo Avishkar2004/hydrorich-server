@@ -3,3 +3,45 @@ How to start Server With Redis if its not installed already :-
 Use this command :- "docker-compose up -d"
 
 then npm run dev
+
+
+Q. Where to see Cache Data after hitting Req :-
+
+1. First, let's connect to the Redis CLI inside your running container:
+
+  "docker exec -it hydrorich-redis redis-cli"
+
+Now that you're in the Redis CLI, here are some useful commands to view your cache data:
+
+1. To see all keys in the cache:
+
+KEYS *
+
+ keys *
+1) "cache:/api/products"
+
+2. To get the value of a specific key:
+GET <key_name>
+
+GET cache:/api/products
+
+3. To see the type of a key:
+
+TYPE <key_name>
+
+4. To see all keys matching a pattern:
+KEYS <pattern>
+
+5. To see all members of a set:
+SMEMBERS <set_name>
+
+6. To see all elements in a list:
+LRANGE <list_name> 0 -1
+
+7. To see all fields and values in a hash:
+HGETALL <hash_name>
+
+You can type these commands directly in the Redis CLI prompt (127.0.0.1:6379>). To exit the Redis CLI, you can type exit or press Ctrl+C.
+Additionally, if you want to monitor Redis operations in real-time, you can use:
+
+MONITOR

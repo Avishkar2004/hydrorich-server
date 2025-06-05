@@ -29,6 +29,7 @@ const cacheMiddleware = (duration) => {
       };
 
       next();
+      console.log("Cache hit");
     } catch (error) {
       console.error("Redis Cache Error:", error);
       next();
