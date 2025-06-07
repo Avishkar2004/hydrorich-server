@@ -26,7 +26,7 @@ import allProductsRouter from "./routes/allProductsRoute.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import invoiceRoutes from "./routes/invoiceRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
-import contactRoutes from "./routes/contactRoutes.js"
+import contactRoutes from "./routes/contactRoutes.js";
 import cacheMiddleware from "./middleware/redisCache.js";
 import productRoutes from "./routes/productRoutes.js";
 import http from "http";
@@ -172,7 +172,7 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/get-products", productRoutes);
-app.use("/api/contact", contactLimiter, contactRoutes);
+app.use("/api/contact", contactRoutes);
 
 // ✅ Start server
 server.listen(process.env.PORT || 8080, () =>

@@ -50,7 +50,7 @@ export const searchLimiter = rateLimit({
 // Rate limiting for contact form submissions
 export const contactLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5, // Limit each IP to 5 submissions per hour
+  max: 100, // Limit each IP to 5 submissions per hour
   message: 'Too many contact form submissions. Please try again later.',
   standardHeaders: true,
   legacyHeaders: false,

@@ -17,15 +17,15 @@ const transporter = nodemailer.createTransport({
 // Function to generate AI response
 async function generateAIResponse(name, subject, message) {
   try {
-    const model = genAI.getGenerativeModel({ model: "models/gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-    const result = await model.generateContent({
-      contents: [
-        {
-          role: "user",
-          parts: [
-            {
-              text: `Write a professional response to this customer inquiry for a water purification company:
+    // Use chat mode instead of generateContent (chat is supported in free tier)
+    const chat = model.startChat({
+      history: [], // optional conversation history
+    });
+
+    const prompt = `
+Write a professional response to this customer inquiry for a water purification company:
 
 Customer Name: ${name}
 Subject: ${subject}
@@ -35,43 +35,39 @@ Guidelines:
 - Be professional and friendly
 - Address their specific concerns
 - Include relevant information about water purification
-- Keep it concise and clear`,
-            },
-          ],
-        },
-      ],
-    });
+- Keep it concise and clear
+    `;
 
+    const result = await chat.sendMessage(prompt);
     const response = await result.response;
-    const text = await response.text();
+    const text = response.text();
+
     return text;
   } catch (error) {
     console.error("AI response generation error:", error);
     return `Dear ${name},
 
-Thank you for contacting Hydrorich. We’ve received your message and will get back to you shortly.
+Thank you for contacting Hydrorich. We've received your message and will get back to you shortly.
 
 Best regards,
 The Hydrorich Team`;
   }
 }
 
-
-
 export const submitContactForm = async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
 
-    // Validate input
+    // 1. Validate input
     const errors = validateContactInput({ name, email, subject, message });
     if (Object.keys(errors).length > 0) {
       return res.status(400).json({ success: false, errors });
     }
 
-    // Generate AI response
+    // 2. Generate AI response using Gemini
     const aiResponse = await generateAIResponse(name, subject, message);
 
-    // Prepare email content for admin
+    // 3. Send email to admin
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.ADMIN_EMAIL,
@@ -86,46 +82,36 @@ export const submitContactForm = async (req, res) => {
         ${
           aiResponse
             ? `
-        <h3>AI-Generated Response:</h3>
-        <p>${aiResponse}</p>
+          <h3>AI-Generated Response Sent to User:</h3>
+          <p>${aiResponse}</p>
         `
             : ""
         }
       `,
     };
-
-    // Send email to admin
     await transporter.sendMail(mailOptions);
 
-    // Send response email to user
+    // 4. Send AI-generated auto-reply to the user
     const userMailOptions = {
       from: process.env.EMAIL_USER,
       to: email,
-      subject: "Thank you for contacting Hydrorich",
+      subject: `Re: ${subject} | Hydrorich Support`,
       html: `
-        <h2>Thank you for contacting us!</h2>
         <p>Dear ${name},</p>
-        <p>We have received your message and will get back to you as soon as possible.</p>
-        <p>Here's a copy of your message:</p>
-        <p><strong>Subject:</strong> ${subject}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-        ${
-          aiResponse
-            ? `
-        <h3>Initial Response:</h3>
-        <p>${aiResponse}</p>
-        `
-            : ""
-        }
+        <p>Thank you for reaching out to Hydrorich.</p>
+        <p>Here’s our response based on your inquiry:</p>
+        <blockquote style="border-left: 4px solid #ccc; padding-left: 10px; color: #333;">
+          ${aiResponse}
+        </blockquote>
+        <p>If you have further questions, feel free to reply to this email.</p>
         <br>
         <p>Best regards,</p>
         <p>The Hydrorich Team</p>
       `,
     };
-
     await transporter.sendMail(userMailOptions);
 
+    // 5. Final success response
     return res.status(200).json({
       success: true,
       message: "Message sent successfully",
