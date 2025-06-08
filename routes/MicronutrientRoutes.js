@@ -4,8 +4,8 @@ import { getMicronutrientById } from "../controllers/products.js";
 
 const router = express.Router();
 
-router.get("/micronutrient", Micronutrient);
+router.get("/micronutrients", Micronutrient);
 
-router.get("/micronutrient/:id", getMicronutrientById);
+router.get("/micronutrients/:id", getMicronutrientById);
 
 export default router;

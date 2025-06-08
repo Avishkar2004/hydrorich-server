@@ -4,8 +4,8 @@ import { getPgrById } from "../controllers/products.js";
 
 const router = express.Router();
 
-router.get("/pgr", plantgrowthregulator);
-router.get('/pgr/:id', getPgrById);
+router.get("/pgrs", plantgrowthregulator);
+router.get('/pgrs/:id', getPgrById);
 
 
 export default router;

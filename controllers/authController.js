@@ -61,6 +61,16 @@ export const loginUser = async (req, res) => {
         .status(401)
         .json({ success: false, message: "User not found." });
     }
+
+    // Check if user is an OAuth user
+    if (user.provider !== "local") {
+      return res.status(401).json({
+        success: false,
+        message: `This email is linked to ${user.provider}. Please use ${user.provider} to log in.`,
+      });
+    }
+
+    // Only compare passwords for local users
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -105,13 +115,13 @@ export const getCurrentUser = async (req, res) => {
     // Update session with complete user data
     req.session.user = {
       ...user,
-      role: user.role || 'user'
+      role: user.role || "user",
     };
-    
-    console.log('Current user session:', {
+
+    console.log("Current user session:", {
       email: req.session.user.email,
       role: req.session.user.role,
-      sessionID: req.session.id
+      sessionID: req.session.id,
     });
 
     res.json(req.session.user);

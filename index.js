@@ -12,7 +12,7 @@ import {
   invoiceLimiter,
   orderLimiter,
   searchLimiter,
-  contactLimiter
+  contactLimiter,
 } from "./middleware/rateLimiter.js";
 import pgrRouter from "./routes/pgrRoute.js";
 import organicRouter from "./routes/organicRoutes.js";

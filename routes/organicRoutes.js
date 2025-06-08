@@ -5,7 +5,7 @@ import { getOrganicById } from "../controllers/products.js";
 
 const router = express.Router();
 
-router.get("/organic", OrganicFertilizer);
-router.get("/organic/:id", getOrganicById);
+router.get("/organics", OrganicFertilizer);
+router.get("/organics/:id", getOrganicById);
 
 export default router;

@@ -4,7 +4,7 @@ import { getFungicideById } from "../controllers/products.js";
 
 const router = express.Router();
 
-router.get("/fungicide", Fungicide);
-router.get("/fungicide/:id", getFungicideById);
+router.get("/fungicides", Fungicide);
+router.get("/fungicides/:id", getFungicideById);
 
 export default router;
