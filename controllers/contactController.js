@@ -17,7 +17,7 @@ const transporter = nodemailer.createTransport({
 // Function to generate AI response
 async function generateAIResponse(name, subject, message) {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     // Use chat mode instead of generateContent (chat is supported in free tier)
     const chat = model.startChat({
@@ -25,17 +25,25 @@ async function generateAIResponse(name, subject, message) {
     });
 
     const prompt = `
-Write a professional response to this customer inquiry for a water purification company:
+Write a professional response to this customer inquiry for an agricultural products company:
 
 Customer Name: ${name}
 Subject: ${subject}
 Message: ${message}
 
+Company Details:
+- Company Name: Hydrorich
+- Phone: 9322810348
+- Business: Agricultural products and solutions
+
 Guidelines:
 - Be professional and friendly
 - Address their specific concerns
-- Include relevant information about water purification
+- Include relevant information about our agricultural solutions
 - Keep it concise and clear
+- Focus on agricultural expertise and product knowledge
+- Mention our commitment to quality agricultural products
+- Include our contact information for further assistance
     `;
 
     const result = await chat.sendMessage(prompt);
