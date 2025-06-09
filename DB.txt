@@ -505,3 +505,13 @@ Compression middleware === Done
 Image optimization
 Code splitting === Done
 Lazy loading 
+
+-- Messages table for real-time chat
+CREATE TABLE messages (
+    id VARCHAR(255) PRIMARY KEY,
+    user_id VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    is_admin BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+); 

@@ -31,6 +31,7 @@ import cacheMiddleware from "./middleware/redisCache.js";
 import productRoutes from "./routes/productRoutes.js";
 import http from "http";
 import { Server } from "socket.io";
+import messageRoutes from "./routes/messageRoutes.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -42,24 +43,30 @@ const io = new Server(server, {
   },
 });
 
+// Make io accessible to our router
+app.set("io", io);
+
 // Socket.io connection handling
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
-  // Join order tracking room
-  socket.on("join_order_tracking", (orderId) => {
-    socket.join(`order_${orderId}`);
-    console.log(
-      `User ${socket.id} joined order tracking room: order_${orderId}`
-    );
+  // Join user's personal room
+  socket.on("join", (userId) => {
+    if (userId) {
+      socket.join(`user_${userId}`);
+      console.log(`User ${userId} joined their room`);
+    } else {
+      console.log("User null joined their room");
+    }
   });
 
-  // Leave order tracking room
-  socket.on("leave_order_tracking", (orderId) => {
-    socket.leave(`order_${orderId}`);
-    console.log(`User ${socket.id} left order tracking room: order_${orderId}`);
+  // Join admin room
+  socket.on("joinAdmin", () => {
+    socket.join("admin");
+    console.log("Admin joined admin room");
   });
 
+  // Handle disconnection
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
   });
@@ -173,6 +180,7 @@ app.use("/api/invoices", invoiceRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/get-products", productRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/messages", messageRoutes);
 
 // ✅ Start server
 server.listen(process.env.PORT || 8080, () =>
