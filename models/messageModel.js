@@ -45,4 +45,4 @@ export const getAdminMessages = async () => {
     console.error("Error fetching admin messages:", error);
     throw error;
   }
-}; 
+};
