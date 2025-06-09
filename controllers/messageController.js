@@ -32,7 +32,7 @@ export const sendMessage = async (req, res) => {
     }
 
     // Handle admin messages
-    if (receiverId === 'admin') {
+    if (receiverId === "admin") {
       const adminId = await getAdminUserId();
       if (!adminId) {
         return res.status(500).json({
@@ -44,10 +44,13 @@ export const sendMessage = async (req, res) => {
       const message = await createMessage(senderId, adminId, content);
 
       // Emit the message to admin room
-      req.app.get("io").to('admin').emit("newMessage", {
-        ...message,
-        sender_name: req.session.user.name,
-      });
+      req.app
+        .get("io")
+        .to("admin")
+        .emit("newMessage", {
+          ...message,
+          sender_name: req.session.user.name,
+        });
 
       return res.status(201).json({
         success: true,
@@ -66,10 +69,13 @@ export const sendMessage = async (req, res) => {
     const message = await createMessage(senderId, receiverId, content);
 
     // Emit the message to the specific room (receiver's room)
-    req.app.get("io").to(receiverId).emit("newMessage", {
-      ...message,
-      sender_name: req.session.user.name,
-    });
+    req.app
+      .get("io")
+      .to(receiverId)
+      .emit("newMessage", {
+        ...message,
+        sender_name: req.session.user.name,
+      });
 
     res.status(201).json({
       success: true,
