@@ -66,67 +66,78 @@ export const getAdminMessages = async (req, res) => {
 export const sendMessage = async (req, res) => {
   try {
     const { receiver_id, content } = req.body;
+    const sender_id = req.user.id;
 
-    if (!content) {
+    if (!receiver_id || !content) {
       return res.status(400).json({
         success: false,
-        message: "Message content is required"
+        message: 'Receiver ID and content are required'
       });
     }
 
+    // If receiver_id is "admin", find the actual admin user
     let actualReceiverId = receiver_id;
-
-    // If receiver_id is "admin", get the actual admin user ID
-    if (receiver_id === "admin") {
-      const adminId = await getAdminUserId();
-      if (!adminId) {
-        return res.status(500).json({
+    if (receiver_id === 'admin') {
+      const [admin] = await db.query(
+        'SELECT id FROM users WHERE role = "admin" LIMIT 1'
+      );
+      if (!admin || admin.length === 0) {
+        return res.status(404).json({
           success: false,
-          message: "Admin user not found"
+          message: 'Admin user not found'
         });
       }
-      actualReceiverId = adminId;
+      actualReceiverId = admin[0].id;
     }
 
-    if (!actualReceiverId) {
-      return res.status(400).json({
-        success: false,
-        message: "Receiver ID is required"
-      });
-    }
+    // Get sender and receiver names
+    const [sender] = await db.query(
+      'SELECT name FROM users WHERE id = ?',
+      [sender_id]
+    );
+    const [receiver] = await db.query(
+      'SELECT name FROM users WHERE id = ?',
+      [actualReceiverId]
+    );
 
-    // Insert message
+    // Insert the message
     const [result] = await db.query(
-      "INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)",
-      [req.user.id, actualReceiverId, content]
+      'INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)',
+      [sender_id, actualReceiverId, content]
     );
 
-    // Get the inserted message with user details
-    const [messages] = await db.query(
+    const messageId = result.insertId;
+
+    // Get the complete message with names
+    const [message] = await db.query(
       `SELECT m.*, 
-              s.name as sender_name, 
-              r.name as receiver_name
-       FROM messages m
-       LEFT JOIN users s ON m.sender_id = s.id
-       LEFT JOIN users r ON m.receiver_id = r.id
-       WHERE m.id = ?`,
-      [result.insertId]
+        u1.name as sender_name,
+        u2.name as receiver_name
+      FROM messages m
+      LEFT JOIN users u1 ON m.sender_id = u1.id
+      LEFT JOIN users u2 ON m.receiver_id = u2.id
+      WHERE m.id = ?`,
+      [messageId]
     );
 
-    const message = messages[0];
-
-    // Emit the message through socket
-    req.app.get("io").to(`chat_${[req.user.id, actualReceiverId].sort().join("_")}`).emit("new_message", message);
+    // Emit socket event
+    const io = req.app.get('io');
+    if (io) {
+      // Emit to sender's room
+      io.to(sender_id).emit('new_message', message[0]);
+      // Emit to receiver's room
+      io.to(actualReceiverId).emit('new_message', message[0]);
+    }
 
     res.json({
       success: true,
-      data: message
+      data: message[0]
     });
   } catch (error) {
-    console.error("Error sending message:", error);
+    console.error('Error sending message:', error);
     res.status(500).json({
       success: false,
-      message: "Failed to send message"
+      message: 'Failed to send message'
     });
   }
 };
