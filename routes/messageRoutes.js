@@ -1,18 +1,23 @@
 import express from "express";
+import {
+  sendMessage,
+  getAdminMessages,
+  getUnreadCount,
+  markAsRead,
+  getUserMessages
+} from "../controllers/messageController.js";
 import { authenticateToken } from "../middleware/auth.js";
-import { isAdmin } from "../middleware/adminAuth.js";
-import { sendMessage, getMessages, getAdminMessages } from "../controllers/messageController.js";
 
 const router = express.Router();
 
-// All routes require authentication
-router.use(authenticateToken);
+// Admin routes
+router.get("/admin", authenticateToken, getAdminMessages);
+router.post("/admin/send", authenticateToken, sendMessage);
 
 // User routes
-router.post("/send", sendMessage);
-router.get("/", getMessages);
+router.get("/", authenticateToken, getUserMessages);
+router.post("/send", authenticateToken, sendMessage);
+router.get("/unread", authenticateToken, getUnreadCount);
+router.post("/read", authenticateToken, markAsRead);
 
-// Admin routes
-router.get("/admin", isAdmin, getAdminMessages);
-
-export default router; 
+export default router;
