@@ -7,7 +7,9 @@ import { db } from "../config/db.js";
 
 // Get admin user ID
 const getAdminUserId = async () => {
-  const [admins] = await db.query("SELECT id FROM users WHERE role = 'admin' LIMIT 1");
+  const [admins] = await db.query(
+    "SELECT id FROM users WHERE role = 'admin' LIMIT 1"
+  );
   return admins.length ? admins[0].id : null;
 };
 
@@ -51,13 +53,13 @@ export const getAdminMessages = async (req, res) => {
 
     res.json({
       success: true,
-      data: messages
+      data: messages,
     });
   } catch (error) {
     console.error("Error fetching admin messages:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to fetch messages"
+      message: "Failed to fetch messages",
     });
   }
 };
@@ -71,38 +73,36 @@ export const sendMessage = async (req, res) => {
     if (!receiver_id || !content) {
       return res.status(400).json({
         success: false,
-        message: 'Receiver ID and content are required'
+        message: "Receiver ID and content are required",
       });
     }
 
     // If receiver_id is "admin", find the actual admin user
     let actualReceiverId = receiver_id;
-    if (receiver_id === 'admin') {
+    if (receiver_id === "admin") {
       const [admin] = await db.query(
         'SELECT id FROM users WHERE role = "admin" LIMIT 1'
       );
       if (!admin || admin.length === 0) {
         return res.status(404).json({
           success: false,
-          message: 'Admin user not found'
+          message: "Admin user not found",
         });
       }
       actualReceiverId = admin[0].id;
     }
 
     // Get sender and receiver names
-    const [sender] = await db.query(
-      'SELECT name FROM users WHERE id = ?',
-      [sender_id]
-    );
-    const [receiver] = await db.query(
-      'SELECT name FROM users WHERE id = ?',
-      [actualReceiverId]
-    );
+    const [sender] = await db.query("SELECT name FROM users WHERE id = ?", [
+      sender_id,
+    ]);
+    const [receiver] = await db.query("SELECT name FROM users WHERE id = ?", [
+      actualReceiverId,
+    ]);
 
     // Insert the message
     const [result] = await db.query(
-      'INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)',
+      "INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)",
       [sender_id, actualReceiverId, content]
     );
 
@@ -121,23 +121,23 @@ export const sendMessage = async (req, res) => {
     );
 
     // Emit socket event
-    const io = req.app.get('io');
+    const io = req.app.get("io");
     if (io) {
       // Emit to sender's room
-      io.to(sender_id).emit('new_message', message[0]);
+      io.to(sender_id).emit("new_message", message[0]);
       // Emit to receiver's room
-      io.to(actualReceiverId).emit('new_message', message[0]);
+      io.to(actualReceiverId).emit("new_message", message[0]);
     }
 
     res.json({
       success: true,
-      data: message[0]
+      data: message[0],
     });
   } catch (error) {
-    console.error('Error sending message:', error);
+    console.error("Error sending message:", error);
     res.status(500).json({
       success: false,
-      message: 'Failed to send message'
+      message: "Failed to send message",
     });
   }
 };
@@ -153,14 +153,14 @@ export const getUnreadCount = async (req, res) => {
     res.json({
       success: true,
       data: {
-        count: result[0].count
-      }
+        count: result[0].count,
+      },
     });
   } catch (error) {
     console.error("Error getting unread count:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to get unread count"
+      message: "Failed to get unread count",
     });
   }
 };
@@ -177,13 +177,13 @@ export const markAsRead = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Messages marked as read"
+      message: "Messages marked as read",
     });
   } catch (error) {
     console.error("Error marking messages as read:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to mark messages as read"
+      message: "Failed to mark messages as read",
     });
   }
 };
@@ -206,7 +206,7 @@ export const getUserMessages = async (req, res) => {
     );
 
     // Parse the messages to ensure they're in the correct format
-    const parsedMessages = messages.map(message => ({
+    const parsedMessages = messages.map((message) => ({
       id: message.id,
       sender_id: message.sender_id,
       receiver_id: message.receiver_id,
@@ -214,18 +214,18 @@ export const getUserMessages = async (req, res) => {
       is_read: message.is_read,
       created_at: message.created_at,
       sender_name: message.sender_name,
-      receiver_name: message.receiver_name
+      receiver_name: message.receiver_name,
     }));
 
     res.json({
       success: true,
-      data: parsedMessages
+      data: parsedMessages,
     });
   } catch (error) {
-    console.error('Error getting user messages:', error);
+    console.error("Error getting user messages:", error);
     res.status(500).json({
       success: false,
-      message: 'Failed to get messages'
+      message: "Failed to get messages",
     });
   }
 };

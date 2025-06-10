@@ -4,7 +4,7 @@ import {
   getAdminMessages,
   getUnreadCount,
   markAsRead,
-  getUserMessages
+  getUserMessages,
 } from "../controllers/messageController.js";
 import { authenticateToken } from "../middleware/auth.js";
 

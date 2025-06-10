@@ -19,8 +19,10 @@ export const initializeSocket = (server) => {
       }
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const [users] = await db.query("SELECT * FROM users WHERE id = ?", [decoded.id]);
-      
+      const [users] = await db.query("SELECT * FROM users WHERE id = ?", [
+        decoded.id,
+      ]);
+
       if (!users.length) {
         return next(new Error("User not found"));
       }
@@ -63,11 +65,13 @@ export const initializeSocket = (server) => {
     socket.on("send_message", async (data) => {
       try {
         const { receiver_id, content } = data;
-        
+
         // If receiver_id is "admin", get the actual admin user ID
         let actualReceiverId = receiver_id;
         if (receiver_id === "admin") {
-          const [admins] = await db.query("SELECT id FROM users WHERE role = 'admin' LIMIT 1");
+          const [admins] = await db.query(
+            "SELECT id FROM users WHERE role = 'admin' LIMIT 1"
+          );
           if (!admins.length) {
             throw new Error("Admin user not found");
           }
@@ -90,12 +94,14 @@ export const initializeSocket = (server) => {
           receiver_id: actualReceiverId,
           content,
           created_at: new Date(),
-          sender_name: socket.user.name
+          sender_name: socket.user.name,
         };
-        
+
         // Create chat room name (sorted to ensure consistency)
-        const chatRoom = `chat_${[socket.user.id, actualReceiverId].sort().join("_")}`;
-        
+        const chatRoom = `chat_${[socket.user.id, actualReceiverId]
+          .sort()
+          .join("_")}`;
+
         // Emit to the chat room
         io.to(chatRoom).emit("new_message", message);
 
