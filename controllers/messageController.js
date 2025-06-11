@@ -25,7 +25,9 @@ export const getAdminMessages = async (req, res) => {
       query = `
         SELECT m.*, 
                s.name as sender_name, 
-               r.name as receiver_name
+               r.name as receiver_name,
+               s.email as sender_email,
+               r.email as receiver_email
         FROM messages m
         LEFT JOIN users s ON m.sender_id = s.id
         LEFT JOIN users r ON m.receiver_id = r.id
@@ -38,8 +40,10 @@ export const getAdminMessages = async (req, res) => {
       // Get all messages for admin
       query = `
         SELECT m.*, 
-               s.name as sender_name, 
-               r.name as receiver_name
+               s.name as sender_name,
+               r.name as receiver_name,
+               s.email as sender_email,
+               r.email as receiver_email
         FROM messages m
         LEFT JOIN users s ON m.sender_id = s.id
         LEFT JOIN users r ON m.receiver_id = r.id
