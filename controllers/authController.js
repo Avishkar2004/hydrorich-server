@@ -83,6 +83,7 @@ export const loginUser = async (req, res) => {
       email: user.email,
       name: user.name,
       role: user.role,
+      createdAt: user.created_at,
     };
 
     return res.status(200).json({
@@ -92,6 +93,7 @@ export const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        createdAt: user.created_at,
       },
     });
   } catch (error) {
@@ -117,13 +119,6 @@ export const getCurrentUser = async (req, res) => {
       ...user,
       role: user.role || "user",
     };
-
-    console.log("Current user session:", {
-      email: req.session.user.email,
-      role: req.session.user.role,
-      sessionID: req.session.id,
-    });
-
     res.json(req.session.user);
   } catch (error) {
     console.error("Error in getCurrentUser:", error);

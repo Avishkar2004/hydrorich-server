@@ -22,7 +22,7 @@ export const authLimiter = rateLimit({
 // Limiter for order creation
 export const orderLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
-  max: 100, // Limit each IP to 10 orders per hour
+  max: 1000, // Limit each IP to 10 orders per hour
   message: "Too many orders from this IP, please try again after an hour",
   standardHeaders: true,
   legacyHeaders: false,
@@ -46,12 +46,11 @@ export const searchLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-
 // Rate limiting for contact form submissions
 export const contactLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 100, // Limit each IP to 5 submissions per hour
-  message: 'Too many contact form submissions. Please try again later.',
+  message: "Too many contact form submissions. Please try again later.",
   standardHeaders: true,
   legacyHeaders: false,
 });
