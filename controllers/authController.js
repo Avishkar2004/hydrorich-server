@@ -1,5 +1,9 @@
 import bcrypt from "bcrypt";
-import { createUser, findUserByEmail } from "../models/userModel.js";
+import {
+  createUser,
+  findUserByEmail,
+  updateUserPassword,
+} from "../models/userModel.js";
 import { validateUserInput } from "../utils/validateUser.js";
 //Create Your Account
 
@@ -123,5 +127,69 @@ export const getCurrentUser = async (req, res) => {
   } catch (error) {
     console.error("Error in getCurrentUser:", error);
     res.status(500).json({ message: "Error fetching user data" });
+  }
+};
+
+
+export const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    // Check if user is authenticated
+    if (!req.session.user) {
+      return res.status(401).json({
+        success: false,
+        message: "Not authenticated",
+      });
+    }
+
+    // Validate input
+    if (!currentPassword || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Current password and new password are required",
+      });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({
+        success: false,
+        message: "New password must be at least 8 characters long",
+      });
+    }
+
+    // Get user from database
+    const user = await findUserByEmail(req.session.user.email);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Verify current password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Current password is incorrect",
+      });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update password in database
+    await updateUserPassword(user.id, hashedPassword);
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    console.error("Error in changePassword:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };

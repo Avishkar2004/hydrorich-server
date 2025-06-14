@@ -59,3 +59,34 @@ export const updateUserRole = async (userId, newRole) => {
   const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [userId]);
   return rows[0];
 };
+
+export const updateUserPassword = async (userId, hashedPassword) => {
+  try {
+    // First update th password
+    const updateQuery = `
+    UPDATE users
+    SET password = ?,
+        updated_at = CURRENT_TIMESTAMP
+    WHERE id = ?
+    `;
+
+    const updateResult = await db.query(updateQuery, [hashedPassword, userId]);
+
+    // Then verify the update by selecting the user
+    const selectQuery = `
+    SELECT id
+    FROM users
+    WHERE id = ? AND password = ?
+    `;
+
+    const [rows] = await db.query(selectQuery, [userId, hashedPassword]);
+
+    if (rows.length === 0) {
+      throw new Error("User not found or password update failed");
+    }
+    return rows[0];
+  } catch (error) {
+    console.error("Error updating user password:", error);
+    throw error;
+  }
+};
