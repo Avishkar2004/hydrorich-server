@@ -1,6 +1,41 @@
 version: "3.8"
 
 services:
+  app:
+    build: .
+    container_name: hydrorich-app
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=Avishkar*2004
+      - DB_NAME=hydrorich
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - hydrorich-network
+
+  mysql:
+    image: mysql:8.0
+    container_name: hydrorich-mysql
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=Avishkar*2004
+      - MYSQL_DATABASE=hydrorich
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - hydrorich-network
+
   redis:
     image: redis:latest
     container_name: hydrorich-redis
@@ -13,6 +48,8 @@ services:
       - hydrorich-network
 
 volumes:
+  # mysql_data:
+  #   driver: local
   redis_data:
     driver: local
 

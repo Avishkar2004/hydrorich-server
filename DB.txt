@@ -319,36 +319,6 @@ VALUES
 (8, 'https://krushidukan.bharatagri.com/cdn/shop/files/Aimco_Azoxy_Plus.webp?v=1742184809', 'ShieldMax Azoxy Plus Bottle Front');
 
 
-
-
-    SELECT 
-      p.id AS product_id,
-      p.name AS product_name,
-      p.description,
-      p.in_stock,
-      pv.id AS variant_id,
-      pv.variant_name,
-      pv.unit,
-      pv.quantity,
-      pv.price,
-      pv.discount_percent,
-      pv.is_available,
-      d.dosage_per_unit,
-      d.usage_instructions,
-      (
-      SELECT ph.image_url
-      FROM product_photos ph
-      WHERE ph.product_id = p.id
-      ORDER BY ph.id ASC
-      LIMIT 1
-      ) AS image_url
-    FROM products p
-    LEFT JOIN product_variants pv ON p.id = pv.product_id
-    LEFT JOIN dosages d ON pv.id = d.variant_id
-    LEFT JOIN product_photos ph ON p.id = ph.product_id
-    WHERE LOWER(p.category) = 'plantgrowthregulator'
-  `;
-
 ============
 
   Based on the codebase I've seen, this appears to be an e-commerce project for agricultural/hydroponic products. Let me outline what you can work on:
@@ -379,7 +349,7 @@ Add multiple payment gateways
 Implement secure payment processing
 Add wallet system
 Subscription-based purchases
-Admin Dashboard
+Admin Dashboard == Done
 Sales analytics
 Inventory management
 User management
@@ -397,7 +367,7 @@ Implement lazy loading
 Security Enhancements
 Add rate limiting === Done
 Implement CSRF protection
-Add input validation
+Add input validation == Done
 Secure API endpoints
 Additional Features
 Live chat support
