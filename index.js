@@ -30,18 +30,14 @@ import contactRoutes from "./routes/contactRoutes.js";
 import cacheMiddleware from "./middleware/redisCache.js";
 import productRoutes from "./routes/productRoutes.js";
 import http from "http";
-import { Server } from "socket.io";
+import { initializeSocket } from "./socket.js";
 import messageRoutes from "./routes/messageRoutes.js";
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
+
+// Initialize Socket.IO
+const io = initializeSocket(server);
 
 // Make io accessible to our router
 app.set("io", io);
@@ -116,7 +112,7 @@ app.use(apiLimiter);
 // Apply specific rate limiter to routes
 app.use("/api/auth", authLimiter);
 app.use("/api/orders", orderLimiter);
-app.use("/api/invoices", invoiceLimiter);
+app.use("/api/invoice", invoiceLimiter);
 app.use("/api/products/search", searchLimiter);
 
 app.use(passport.initialize());
@@ -176,13 +172,13 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/auth", authRouter);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishlistRoutes);
-app.use("/api/invoices", invoiceRoutes);
+app.use("/api/invoice", invoiceRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/get-products", productRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/messages", messageRoutes);
 
-// ✅ Start server
-server.listen(process.env.PORT || 8080, () =>
-  console.log(`🚀 Server running on port ${process.env.PORT}`)
-);
+const PORT = process.env.PORT || 8080;
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});

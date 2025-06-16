@@ -30,9 +30,9 @@ export const orderLimiter = rateLimit({
 
 // Limiter for invoice generation
 export const invoiceLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 20, // Limit each IP to 20 invoice downloads per hour
-  message: "Too many invoice downloads, please try again after an hour",
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 invoice downloads per 15 minutes
+  message: "Too many invoice downloads, please try again after 15 minutes",
   standardHeaders: true,
   legacyHeaders: false,
 });

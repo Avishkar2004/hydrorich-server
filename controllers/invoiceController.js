@@ -33,7 +33,26 @@ export const generateOrderInvoice = async (req, res) => {
       cachedInvoice &&
       Date.now() - cachedInvoice.timestamp < CACHE_DURATION
     ) {
-      return res.download(cachedInvoice.path, `invoice-${orderId}.pdf`);
+      // Set headers before sending file
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename=invoice-${orderId}.pdf`
+      );
+      res.setHeader("Cache-Control", "private, max-age=300");
+
+      // Stream the file instead of using res.download
+      const fileStream = fs.createReadStream(cachedInvoice.path);
+      fileStream.pipe(res);
+
+      fileStream.on("error", (error) => {
+        console.error("Error streaming cached invoice:", error);
+        if (!res.headersSent) {
+          res.status(500).json({ message: "Error streaming invoice" });
+        }
+      });
+
+      return;
     }
 
     // Get user details
@@ -65,18 +84,22 @@ export const generateOrderInvoice = async (req, res) => {
       "Content-Disposition",
       `attachment; filename=invoice-${order.order_number}.pdf`
     );
-    res.setHeader("Cache-Control", "private, max-age=300"); // Cache for 5 minutes
+    res.setHeader("Cache-Control", "private, max-age=300");
 
-    // Send the file
-    res.download(invoicePath, `invoice-${order.order_number}.pdf`, (err) => {
-      if (err) {
-        console.error("Error sending invoice:", err);
-        if (!res.headersSent) {
-          res.status(500).json({ message: "Error sending invoice" });
-        }
+    // Stream the file instead of using res.download
+    const fileStream = fs.createReadStream(invoicePath);
+    fileStream.pipe(res);
+
+    // Handle stream errors
+    fileStream.on("error", (error) => {
+      console.error("Error streaming invoice:", error);
+      if (!res.headersSent) {
+        res.status(500).json({ message: "Error streaming invoice" });
       }
+    });
 
-      // Delete the file after sending
+    // Clean up the file after streaming
+    fileStream.on("end", () => {
       fs.unlink(invoicePath, (unlinkErr) => {
         if (unlinkErr) {
           console.error("Error deleting invoice:", unlinkErr);
