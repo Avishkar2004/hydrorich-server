@@ -92,13 +92,13 @@ This will start:
 npm run dev
 ```
 
-## Database Setup
+## Database Setup Manually
 
 The application uses MySQL as the database. Follow these steps to set up the database manually:
 
 1. **Create Database**
 ```sql
-CREATE DATABASE hydrorich;
+CREATE DATABASE IF NOT EXISTS hydrorich;
 USE hydrorich;
 ```
 
