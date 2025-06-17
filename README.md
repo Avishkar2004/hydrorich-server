@@ -97,12 +97,14 @@ npm run dev
 The application uses MySQL as the database. Follow these steps to set up the database manually:
 
 1. **Create Database**
+
 ```sql
 CREATE DATABASE IF NOT EXISTS hydrorich;
 USE hydrorich;
 ```
 
 2. **Create Users Table**
+
 ```sql
 CREATE TABLE users (
     id VARCHAR(255) PRIMARY KEY,
@@ -117,6 +119,7 @@ CREATE TABLE users (
 ```
 
 3. **Create Products Table**
+
 ```sql
 CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -130,6 +133,7 @@ CREATE TABLE products (
 ```
 
 4. **Create Product Variants Table**
+
 ```sql
 CREATE TABLE product_variants (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -145,6 +149,7 @@ CREATE TABLE product_variants (
 ```
 
 5. **Create Dosages Table**
+
 ```sql
 CREATE TABLE dosages (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -156,6 +161,7 @@ CREATE TABLE dosages (
 ```
 
 6. **Create Product Photos Table**
+
 ```sql
 CREATE TABLE product_photos (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -167,6 +173,7 @@ CREATE TABLE product_photos (
 ```
 
 7. **Create Cart Table**
+
 ```sql
 CREATE TABLE cart (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -183,6 +190,7 @@ CREATE TABLE cart (
 ```
 
 8. **Create Wishlist Table**
+
 ```sql
 CREATE TABLE wishlist (
     id VARCHAR(250) PRIMARY KEY DEFAULT (UUID()),
@@ -197,6 +205,7 @@ CREATE TABLE wishlist (
 ```
 
 9. **Create Orders Table**
+
 ```sql
 CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -214,6 +223,7 @@ CREATE TABLE orders (
 ```
 
 10. **Create Order Items Table**
+
 ```sql
 CREATE TABLE order_items (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -231,6 +241,7 @@ CREATE TABLE order_items (
 ```
 
 11. **Create Messages Table**
+
 ```sql
 CREATE TABLE messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -245,8 +256,9 @@ CREATE TABLE messages (
 ```
 
 12. **Insert Initial Categories**
+
 ```sql
-INSERT INTO categories (name) VALUES 
+INSERT INTO categories (name) VALUES
 ('plantgrowthregulator'),
 ('organicFertilizers'),
 ('micronutrient'),
@@ -255,6 +267,7 @@ INSERT INTO categories (name) VALUES
 ```
 
 13. **Set this User as a Admin**
+
 ```sql
 UPDATE users SET role = 'admin' WHERE email = 'avishkarkakde2004@gmail.com';
 ```
@@ -262,6 +275,7 @@ UPDATE users SET role = 'admin' WHERE email = 'avishkarkakde2004@gmail.com';
 ### Sample Data
 
 You can find sample data insertion queries in the `db.txt` file in the server directory. These include:
+
 - Sample products
 - Product variants
 - Dosage information
