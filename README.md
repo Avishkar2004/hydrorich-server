@@ -25,7 +25,7 @@ This is the backend server for Hydrorich, built with Node.js, Express, and MySQL
 1. **Clone the repository**
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Avishkar2004/hydrorich-server
 cd server
 ```
 
